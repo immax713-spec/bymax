@@ -10,6 +10,7 @@
     <meta name="theme-color" content="#8B0000">
     
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=52007aca-39bd-4a9c-87ef-4d9b730aeb71" type="text/javascript"></script>
+    <link rel="stylesheet" href="Приложение 1/assets/css/main.css">
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -339,6 +340,7 @@
         .inspector-counter.completed { color: #27ae60; background: #d4edda; border-color: #c3e6cb; }
         .inspector-counter.admin { color: #00FF7F; background: #e6fff2; border-color: #00FF7F; }
         .inspector-counter.inactive { color: #999; background: #f0f0f0; border-color: #ddd; }
+        #orgLogo { width: 28px; height: 28px; object-fit: contain; display: block; border-radius: 4px; }
 
         /* 🔥 СЧЕТЧИКИ ДЛЯ СПИСКОВ */
         .list-counter { font-size: 10px; font-weight: bold; color: #666; background: #f8f9fa; padding: 2px 5px; border-radius: 10px; border: 1px solid #dee2e6; margin-left: 6px; }
@@ -418,24 +420,24 @@
         .entry-warning { background: #fff3cd; color: #856404; padding: 6px; border-radius: 4px; border: 1px solid #ffeaa7; margin-top: 5px; font-size: 0.75rem; text-align: center; }
 
         /* 🔥 СТИЛИ УПРАВЛЕНИЯ ИНСПЕКТОРАМИ */
-        .filter-access-menu, .inspector-management-menu { 
-    position: fixed; 
-    top: 280px; /* 🔥 ФИКСИРОВАННОЕ ЗНАЧЕНИЕ В PX */
-    left: 50%; 
-    transform: translateX(-50%); /* 🔥 УБИРАЕМ translateY */
-    background: white; 
-    padding: 15px; 
-    border-radius: 10px; 
-    box-shadow: 0 5px 30px rgba(0,0,0,0.3); 
-    z-index: 10000; 
-    display: none; 
-    flex-direction: column; 
-    gap: 12px; 
-    width: 95%; 
-    max-width: 500px; 
-    max-height: 70vh; 
-    overflow-y: auto; 
-}
+        .inspector-management-menu { 
+            position: fixed; 
+            top: 50%;
+            left: 50%; 
+            transform: translate(-50%, -55%);
+            background: white; 
+            padding: 15px; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3); 
+            z-index: 10000; 
+            display: none; 
+            flex-direction: column; 
+            gap: 12px; 
+            width: 95%; 
+            max-width: 600px; 
+            max-height: 70vh; 
+            overflow-y: auto; 
+        }
 
         .filter-access-title { font-weight: bold; color: #333; margin-bottom: 8px; text-align: center; font-size: 1rem; }
         .filter-access-section { margin-bottom: 12px; }
@@ -543,11 +545,28 @@
             background: #2980b9;
         }
 
-        /* 🔥 СТИЛИ ДЛЯ БАЛЛУНОВ */
         .balloon-content {
-            max-width: 280px;
-            padding: 10px;
+            width: 90vw;
+            max-width: 1200px;
+            padding: 16px;
+            background: #ffffff;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+            clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px), 0 16px);
         }
+        .balloon-content .button-group { width: 100%; }
+        .workday-modal { position: fixed; inset: 0; display: none; z-index: 10001; }
+        .workday-modal.hidden { display: none; }
+        .workday-modal:not(.hidden) { display: block; }
+        .workday-modal__backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); z-index: 0; }
+        .workday-modal__card { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); width: 520px; max-width: 95%; background: #fff; border-radius: 12px; box-shadow: 0 12px 28px rgba(0,0,0,0.25); padding: 16px; z-index: 1; }
+        .workday-modal__close { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 18px; cursor: pointer; }
+        .workday-modal__content { display: flex; flex-direction: column; gap: 10px; }
+        .workday-actions { display: flex; gap: 10px; }
+        .workday-actions .btn { flex: 1; padding: 10px 12px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+        .btn-primary { background: linear-gradient(135deg, #3498db, #2980b9); color: #fff; }
+        .btn-secondary { background: #f0f3f6; color: #2c3e50; }
+        .workday-comment { width: 100%; min-height: 72px; resize: vertical; border-radius: 10px; border: 1px solid #dfe6e9; padding: 10px; }
+        .inspector-btn[disabled] { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
         
         /* 🔥 АДАПТИВНЫЕ СТИЛИ ДЛЯ МОБИЛЬНЫХ */
         @media (max-width: 768px) {
@@ -591,16 +610,20 @@
                 right: 10px;
             }
             
-            .filter-access-menu, .inspector-management-menu { 
+            .inspector-management-menu { 
                 width: 98%; 
                 max-width: 98%;
             }
             
-            .balloon-content {
-                max-width: 250px;
-                padding: 8px;
-            }
+            .balloon-content { width: 95vw; max-width: 95vw; padding: 12px; }
         }
+
+        .mgmt-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+        .mgmt-tab-btn { padding: 8px 12px; border: none; border-radius: 10px; background: #3498db; color: #fff; cursor: pointer; font-size: 0.9rem; font-weight: 600; }
+        .mgmt-tab-btn:hover { background: #2f86c9; }
+        .mgmt-tab-btn.active { background: linear-gradient(135deg, #1f6fb2, #3498db); color: #fff; }
+        .mgmt-section { display: none; }
+        .mgmt-section.active { display: block; }
 
         /* 🔥 УЛУЧШЕННЫЕ СТИЛИ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ */
         @media (max-width: 480px) {
@@ -618,7 +641,7 @@
                 grid-template-columns: 1fr;
             }
             
-            .filter-access-menu, .inspector-management-menu { 
+            .inspector-management-menu { 
                 padding: 12px; 
                 width: 98%; 
             }
@@ -670,24 +693,7 @@
         <button class="logout-btn" onclick="logout()">Выйти</button>
     </div>
 
-    <!-- 🔥 МЕНЮ ДОСТУПА К ФИЛЬТРАМ -->
-    <div class="filter-access-menu" id="filterAccessMenu">
-        <div class="filter-access-title">🔓 Настройка доступа к фильтрам</div>
-        
-        <input type="text" class="search-management" id="searchAccess" placeholder="🔍 Поиск по инспекторам..." onkeyup="filterAccessInspectors()">
-        
-        <div class="filter-access-buttons">
-            <button class="save-access-btn" onclick="saveFilterAccess()">💾 Сохранить настройки доступа</button>
-        </div>
-        
-        <div class="filter-access-all">
-            <div class="filter-access-item">
-                <input type="checkbox" id="accessAll" onchange="toggleAllFilterAccess()">
-                <label for="accessAll"><strong>Выдать доступ всем</strong></label>
-            </div>
-        </div>
-        <div id="filterAccessContent" style="max-height: 400px; overflow-y: auto;"></div>
-    </div>
+    
 
     <!-- 🔥 МЕНЮ УПРАВЛЕНИЯ ИНСПЕКТОРАМИ -->
     <div class="inspector-management-menu" id="inspectorManagementMenu">
@@ -721,8 +727,8 @@
             <div class="control-section" id="workDaySection" style="display: none;">
                 <div class="control-section-title">📅 Управление рабочим днем</div>
                 <div class="control-buttons-grid">
-                   <button class="inspector-btn" id="openDayBtn" onclick="startWorkDay()">🟢 Открыть день</button>
-<button class="inspector-btn close-day-btn" id="closeDayBtn" onclick="endWorkDay()" disabled>🔴 Закрыть день</button>
+                   <button class="inspector-btn" id="openDayBtn" onclick="openWorkdayModal('open')">🟢 Открыть день</button>
+<button class="inspector-btn close-day-btn" id="closeDayBtn" onclick="openWorkdayModal('close')" disabled>🔴 Закрыть день</button>
                 </div>
                 <div class="work-day-indicator closed" id="workDayIndicator">Статус: День закрыт</div>
             </div>
@@ -733,7 +739,7 @@
                 <div class="control-buttons-grid">
                     <button class="admin-btn" onclick="toggleInspectorsHomes()">🏠 Показать инспекторов</button>
                     <button class="admin-btn" id="managementBtn" onclick="toggleInspectorsManagement()">👥 Управление инспекторами</button>
-                    <button class="admin-btn" id="accessBtn" onclick="toggleFilterAccessMenu()">🔓 Доступ к фильтрам</button>
+                    
                 </div>
             </div>
 
@@ -813,6 +819,30 @@
         </div>
     </div>
 
+    <div class="object-details hidden" id="objectDetailsOverlay">
+        <div class="object-details__backdrop"></div>
+        <div class="object-details__card" role="dialog" aria-modal="true">
+            <button class="object-details__close" type="button" onclick="closeObjectDetails()">✕</button>
+            <div class="object-details__content" id="objectDetailsContent"></div>
+        </div>
+    </div>
+
+    <div id="workdayModal" class="workday-modal hidden">
+        <div class="workdayModalBackdrop workday-modal__backdrop" onclick="closeWorkdayModal()"></div>
+        <div class="workdayModalCard workday-modal__card">
+            <button class="workday-modal__close" onclick="closeWorkdayModal()">✕</button>
+            <div class="workday-modal__content">
+                <div id="workdayModalTitle">Согласование действия</div>
+                <div id="workdayModalInfo"></div>
+                <textarea id="workdayCommentInput" class="workday-comment" placeholder="Комментарий (необязательно)"></textarea>
+                <div class="workday-actions">
+                    <button class="btn btn-secondary" onclick="closeWorkdayModal()">Отмена</button>
+                    <button class="btn btn-primary" onclick="confirmWorkdayAction()">Подтвердить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
         // 🔥 КОНФИГУРАЦИЯ
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzm7DciSJvpoTceJFVByuvTy9iPaYBURhnJwtkY6zSTySZl9rv84fU46Fmo3mMJXcoi/exec';
@@ -825,6 +855,42 @@ const WORK_DAY_STATUS_KEY = 'work_day_status';
 const WORK_DAY_START_TIME_KEY = 'work_day_start_time';
 const INSPECTORS_CACHE_KEY = 'inspectors_cache';
 const INSPECTORS_CACHE_TIMESTAMP = 'inspectors_cache_timestamp';
+
+// 🔥 ЛОКАЛЬНЫЙ КЭШ НАСТРОЕК ИНСПЕКТОРОВ
+function loadInspectorsCache() {
+    try {
+        const raw = localStorage.getItem(INSPECTORS_CACHE_KEY);
+        return raw ? JSON.parse(raw) : {};
+    } catch (_) { return {}; }
+}
+
+function saveInspectorsCache(cache) {
+    try {
+        localStorage.setItem(INSPECTORS_CACHE_KEY, JSON.stringify(cache));
+        localStorage.setItem(INSPECTORS_CACHE_TIMESTAMP, String(Date.now()));
+    } catch (_) {}
+}
+
+function upsertInspectorCache(inspector, config) {
+    const cache = loadInspectorsCache();
+    cache[inspector] = { color: config.color, icon: config.icon, status: config.status };
+    saveInspectorsCache(cache);
+}
+
+function mergeLocalInspectorConfig() {
+    const cache = loadInspectorsCache();
+    const normalize = (s) => (s || '').toLowerCase().trim();
+    const serverKeysByNorm = {};
+    Object.keys(window.INSPECTORS_CONFIG || {}).forEach(k => { serverKeysByNorm[normalize(k)] = k; });
+    Object.keys(cache).forEach(name => {
+        const serverKey = serverKeysByNorm[normalize(name)] || name;
+        if (!window.INSPECTORS_CONFIG[serverKey]) window.INSPECTORS_CONFIG[serverKey] = {};
+        const localCfg = cache[name];
+        window.INSPECTORS_CONFIG[serverKey].color = localCfg.color || window.INSPECTORS_CONFIG[serverKey].color;
+        window.INSPECTORS_CONFIG[serverKey].icon = localCfg.icon || window.INSPECTORS_CONFIG[serverKey].icon;
+        window.INSPECTORS_CONFIG[serverKey].status = localCfg.status || window.INSPECTORS_CONFIG[serverKey].status;
+    });
+}
 const FILTERS_STATE_KEY = 'filters_state'; // <-- ЭТО НОВЫЙ КЛЮЧ
 
         // 🔥 НАСТРОЙКИ СЕССИИ
@@ -839,7 +905,7 @@ let showInspectorsHomes = false;
 let isWorkDayOpen = false;
 let availableIcons = {};
 let availableColors = [];
-let filterAccessSettings = {};
+ 
 let activeMenu = null;
 let isSidebarCollapsed = false;
 
@@ -1160,6 +1226,41 @@ function resetFiltersToDefault() {
 
         function refreshInspectorsList() {
             loadInspectorsFromServer();
+            const logoEl = document.getElementById('orgLogo');
+            if (logoEl) {
+                const DEFAULT_SVG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyOCIgaGVpZ2h0PSIyOCI+PHJlY3Qgd2lkdGg9IjI4IiBoZWlnaHQ9IjI4IiByeD0iNCIgZmlsbD0iI2IxMDAwMCIvPjwvc3ZnPg==';
+                logoEl.src = window.ORG_LOGO_BASE64 || DEFAULT_SVG;
+                (function(){
+                    const names = [
+                        'WhatsApp Image 2025-11-11 at 17.47.04.png',
+                        'WhatsApp Image 2025-11-11 at 17.47.04.jpg',
+                        'WhatsApp Image 2025-11-11 at 17.47.04.jpeg',
+                        'WhatsApp Image 2025-11-11 at 17.47.04.webp'
+                    ];
+                    const load = function(i){
+                        if (i >= names.length) return;
+                        const path = encodeURI(names[i]);
+                        const tryImg = () => {
+                            const img = new Image();
+                            img.onload = function(){ logoEl.src = path; };
+                            img.onerror = function(){ fetchAsBase64(); };
+                            img.src = path;
+                        };
+                        const fetchAsBase64 = () => {
+                            fetch(path)
+                                .then(r => r.ok ? r.blob() : Promise.reject())
+                                .then(blob => {
+                                    const reader = new FileReader();
+                                    reader.onloadend = function(){ window.ORG_LOGO_BASE64 = reader.result; logoEl.src = reader.result; };
+                                    reader.readAsDataURL(blob);
+                                })
+                                .catch(() => load(i+1));
+                        };
+                        tryImg();
+                    };
+                    load(0);
+                })();
+            }
             showNotification('🔄 Обновляем список инспекторов...', 'success');
         }
 
@@ -1225,10 +1326,10 @@ function resetFiltersToDefault() {
                 console.log('🟡 Ответ от сервера:', result);
                 delete window[callbackName];
                 
-                if (result.success && result.verified) {
+                if (result && result.success) {
                     console.log('✅ УСПЕШНЫЙ ЛОГИН!');
                     currentUser = selectedUser;
-                    userAccessRights = result.user.role;
+                    userAccessRights = result.accessRights || 'Инспектор';
                     
                     // Сохраняем пароль если включено "Запомнить"
                     savePassword(selectedUser, enteredPassword);
@@ -1295,15 +1396,17 @@ function resetFiltersToDefault() {
 
             // 🔥 УСТАНАВЛИВАЕМ НАСТРОЙКИ БАЛЛУНОВ
             objectManager.objects.options.set({
-                balloonMaxWidth: 300,
-                balloonMinWidth: 250,
-                balloonPanelMaxMapArea: 0
+                balloonMaxWidth: 1200,
+                balloonMinWidth: 600,
+                balloonPanelMaxMapArea: 0,
+                openBalloonOnClick: false
             });
             
             activeObjectsLayer.objects.options.set({
-                balloonMaxWidth: 300,
-                balloonMinWidth: 250,
-                balloonPanelMaxMapArea: 0
+                balloonMaxWidth: 1200,
+                balloonMinWidth: 600,
+                balloonPanelMaxMapArea: 0,
+                openBalloonOnClick: false
             });
 
             objectManager.objects.events.add('click', function (e) {
@@ -1391,10 +1494,21 @@ function resetFiltersToDefault() {
     objectsData = data.points;
     
     window.INSPECTORS_CONFIG = data.inspectorsConfig || {};
+    mergeLocalInspectorConfig();
     window.INSPECTOR_HOMES = data.inspectorsHomes || {};
     availableIcons = data.availableIcons || {};
     availableColors = data.availableColors || [];
-    filterAccessSettings = data.filterAccessSettings || {};
+    (function(){
+        var EXTRA_COLORS = ['#e74c3c','#ff6b6b','#ff9f43','#f1c40f','#2ecc71','#1abc9c','#3498db','#9b59b6','#8e44ad','#34495e','#7f8c8d','#fd79a8','#e84393','#6c5ce7','#0984e3','#00b894','#55efc4','#ffeaa7','#fab1a0','#fdcb6e'];
+        var set = {};
+        availableColors.forEach(function(c){ set[c]=1; });
+        EXTRA_COLORS.forEach(function(c){ if(!set[c]) availableColors.push(c); });
+        var EXTRA_ICONS = { star:'⭐', pin:'📍', shield:'🛡️', build:'🏗️', worker:'👷', house:'🏠', police:'🚓', fire:'🔥', anchor:'⚓', leaf:'🍃', light:'💡', tool:'🛠️', rocket:'🚀', diamond:'🔷', square:'🔶' };
+        for (var k in EXTRA_ICONS) { if (availableIcons[k] === undefined) availableIcons[k] = EXTRA_ICONS[k]; }
+        var EXTRA_EMOJIS = ['😁','🥹','🤣','🥲','😇','🙂','😍','🥰','😘','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','🙂‍↕️','🥺','😭','😤','😡','🤬','🤯','🥶','🥵','🫣','🤭','🫡','🫠','🤫','😐','🥱','😴','🤤','😵','😵‍💫','🤐','🥴','🤢','🤮','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','🤖','🎃','🫰','🫶','🤞','✌️','👊','🤝','🤌','🫵','🫦','🧠','👁️','🤴','🦹‍♂️','🧞‍♂️','🧞','🧜','🙆‍♂️','🤦‍♂️','🙋‍♂️','🧖‍♂️','🧑‍🦽','🧑‍🦼','👑','⛑️','🦺','🕶️','🐯','🦁','🐽','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐒','🐔','🐤','🐣','🐥','🦅','🦉','🐺','🦄','🫎','🐝','🕷️','🕸️','🦂','🐢','🦖','🐙','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🦭','🦍','🦧','🪽','🦦','🌪️','🔥','🌈','💫','⭐','✨','⚡','🍌','🍑','🌶️','🍓','🥥','🍭','🍬','🍫','🥃','🍺','🍻','🍷','🍾','🤼','🚀','💵','💸','💰','💳','💎','💣','🧨','🔪','🦠','🏴‍☠️'];
+        EXTRA_EMOJIS.forEach(function(em, idx){ var key = 'emoji_'+idx; if (availableIcons[key] === undefined) availableIcons[key] = em; });
+    })();
+    
     
     console.log('✅ Загружено объектов:', objectsData.length);
     console.log('✅ Конфигурация инспекторов:', Object.keys(window.INSPECTORS_CONFIG).length);
@@ -1443,7 +1557,10 @@ function resetFiltersToDefault() {
         function initInterface() {
     console.log('🟡 ========== НАЧАЛО ИНИЦИАЛИЗАЦИИ ИНТЕРФЕЙСА ==========');
     
-    const uniqueLists = [...new Set(objectsData.map(obj => obj.list).filter(Boolean))].sort();
+    const uniqueLists = [...new Set((userAccessRights === 'Император' || userAccessRights === 'Администратор'
+        ? objectsData
+        : objectsData.filter(o => isSameInspector(o.inspector, currentUser))
+    ).map(obj => obj.list).filter(Boolean))].sort();
     const inspectorStats = calculateInspectorStats();
     const listStats = calculateListStats();
 
@@ -1451,9 +1568,9 @@ function resetFiltersToDefault() {
     inspectorsList.innerHTML = '';
     
     // 🔥 ВКЛЮЧАЕМ ADMIN ТОЛЬКО ДЛЯ ИМПЕРАТОРА
-    let allSystemInspectors = Object.keys(window.INSPECTORS_CONFIG || {}).filter(inspector => 
-        inspector !== 'Юсупов Артур Русланович'
-    );
+    let allSystemInspectors = (userAccessRights === 'Император' || userAccessRights === 'Администратор')
+        ? Object.keys(window.INSPECTORS_CONFIG || {}).filter(inspector => inspector !== 'Юсупов Артур Русланович')
+        : [currentUser];
 
     // 🔥 ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕ ИМПЕРАТОР - ИСКЛЮЧАЕМ ADMIN ИЗ ФИЛЬТРОВ
     if (userAccessRights !== 'Император') {
@@ -1466,8 +1583,7 @@ function resetFiltersToDefault() {
         
         const hasAccessToObjects = userAccessRights === 'Император' || 
                                  userAccessRights === 'Администратор' ||
-                                 isSameInspector(inspector, currentUser) ||
-                                 hasFilterAccessToInspector(inspector);
+                                 isSameInspector(inspector, currentUser);
         
         if (hasAccessToObjects) {
             const checkbox = document.createElement('div');
@@ -1531,9 +1647,13 @@ function resetFiltersToDefault() {
             
             const config = window.INSPECTORS_CONFIG ? window.INSPECTORS_CONFIG[inspector] : null;
             if (config) {
+                let iconValue = config.icon || '👨‍💼';
+                if (typeof iconValue === 'string' && availableIcons && availableIcons[iconValue]) {
+                    iconValue = availableIcons[iconValue];
+                }
                 return {
                     color: config.color || '#808080',
-                    icon: config.icon || '👨‍💼',
+                    icon: iconValue,
                     status: config.status || 'active',
                     accessRights: config.accessRights || 'Инспектор'
                 };
@@ -1576,30 +1696,8 @@ function resetFiltersToDefault() {
             return stats;
         }
 
-        function hasFilterAccessToInspector(targetInspector) {
-            if (userAccessRights === 'Император' || userAccessRights === 'Администратор') {
-                return true;
-            }
-            
-            if (isSameInspector(targetInspector, currentUser)) {
-                return true;
-            }
-            
-            if (!currentUser || !filterAccessSettings[currentUser]) {
-                return false;
-            }
-            
-            const userAccess = filterAccessSettings[currentUser];
-            
-            if (userAccess === true) {
-                return true;
-            }
-            
-            if (Array.isArray(userAccess)) {
-                return userAccess.includes(targetInspector);
-            }
-            
-            return false;
+        function hasFilterAccessToInspector(targetInspector) { 
+            return userAccessRights === 'Император' || userAccessRights === 'Администратор';
         }
 
         function isSameInspector(objInspector, userInspector) {
@@ -1868,9 +1966,15 @@ function updateSinglePointOnMap(objectId, newStatus) {
 
     console.log(`🔄 Точечное обновление точки ${objectId} -> ${newStatus}`);
 
-    // 🔥 УДАЛЯЕМ ИЗ ВСЕХ СЛОЕВ СРАЗУ
-    objectManager.remove(objectId);
-    activeObjectsLayer.remove(objectId);
+    // 🔥 УДАЛЯЕМ ИЗ ВСЕХ СЛОЕВ СРАЗУ (учитываем строковый/числовой id)
+    try { objectManager.remove(objectId); } catch (_) {}
+    try { objectManager.remove(String(objectId)); } catch (_) {}
+    try { activeObjectsLayer.remove(objectId); } catch (_) {}
+    try { activeObjectsLayer.remove(String(objectId)); } catch (_) {}
+
+    const existedActive = (activeObjectsLayer && activeObjectsLayer.objects && (
+        activeObjectsLayer.objects.getById(objectId) || activeObjectsLayer.objects.getById(String(objectId))
+    ));
 
     const style = getInspectorStyle(object.inspector);
     let feature;
@@ -1899,7 +2003,9 @@ function updateSinglePointOnMap(objectId, newStatus) {
                 iconSize: [50, 50]
             }
         };
-        activeObjectsLayer.add({ type: 'FeatureCollection', features: [feature] });
+        if (!existedActive) {
+            activeObjectsLayer.add({ type: 'FeatureCollection', features: [feature] });
+        }
         
     } else if (newStatus === 'completed') {
         // ✅ ВЫПОЛНЕННАЯ ТОЧКА - МЕДИЦИНСКИЙ КРЕСТИК
@@ -1975,131 +2081,164 @@ function updateSinglePointOnMap(objectId, newStatus) {
 }
 
         function showObjectBalloon(objectId) {
-            const object = objectManager.objects.getById(objectId) || activeObjectsLayer.objects.getById(objectId);
-            if (object) {
-                if (objectManager.objects.getById(objectId)) {
-                    objectManager.objects.balloon.open(objectId);
-                } else {
-                    activeObjectsLayer.objects.balloon.open(objectId);
-                }
-            }
+            openObjectDetails(objectId);
         }
 
         function getBalloonContent(obj, icon) {
             const isNew = !obj.entryTime && !obj.exitTime;
             const isActive = obj.entryTime && !obj.exitTime;
             const isCompleted = !!obj.exitTime;
-            
-            let statusBadge;
-            if (isCompleted) {
-                statusBadge = '<span class="status-badge status-completed">✅ ВЫПОЛНЕНО</span>';
-            } else if (isActive) {
-                statusBadge = '<span class="status-badge status-active">🔵 АКТИВНА</span>';
-            } else {
-                statusBadge = '<span class="status-badge status-new">🆕 НОВАЯ</span>';
-            }
-
             const coordinates = `${obj.latitude}, ${obj.longitude}`;
-            
-            const checklistButton = obj.checklistLink ? 
-                `<a href="${obj.checklistLink}" target="_blank" class="checklist-btn">📋 Чек-лист</a>` : '';
 
+            let badgeClass = 'object-card__badge object-card__badge--new';
+            let badgeText = 'Новая';
+            if (isActive) { badgeClass = 'object-card__badge object-card__badge--active'; badgeText = 'В работе'; }
+            else if (isCompleted) { badgeClass = 'object-card__badge object-card__badge--completed'; badgeText = 'Выполнена'; }
+
+            const checklistButton = obj.checklistLink ? 
+                `<a href="${obj.checklistLink}" target="_blank" class="object-card__button object-card__button--primary">📝 Чек-лист</a>` : '';
             const yandexDiskButton = obj.yandexDiskLink ? 
-                `<a href="${obj.yandexDiskLink}" target="_blank" class="yandex-disk-btn">📁 Яндекс Диск</a>` : '';
+                `<a href="${obj.yandexDiskLink}" target="_blank" class="object-card__button object-card__button--primary">📁 Яндекс Диск</a>` : '';
 
             const canMarkEntryExit = (userAccessRights === 'Император' || userAccessRights === 'Администратор') || 
                                    isSameInspector(obj.inspector, currentUser);
 
-            let entryExitButtons = '';
-            let entryWarning = '';
-            
+            let entrySection = '';
+            let notices = '';
             if (!isCompleted) {
                 if (isNew && canMarkEntryExit) {
                     const canEnter = canInspectorEnterObject(obj.inspector, obj.id);
-                    
                     if (canEnter.canEnter) {
-                        entryExitButtons = `
-                            <div class="entry-exit-buttons">
-                                <button class="entry-btn" onclick="markEntry(${obj.id})">🚪 Вход</button>
-                            </div>
-                        `;
+                        entrySection = `<div class="object-card__actions"><button class="object-card__button object-card__button--primary" onclick="markEntry(${obj.id})">🚪 Вход</button></div>`;
                     } else {
-                        entryExitButtons = `
-                            <div class="entry-exit-buttons">
-                                <button class="entry-btn" disabled>🚪 Вход</button>
-                            </div>
-                        `;
-                        entryWarning = `<div class="entry-warning">${canEnter.message}</div>`;
-                        
+                        entrySection = `<div class="object-card__actions"><button class="object-card__button object-card__button--primary" disabled>🚪 Вход</button></div>`;
+                        notices += `<div class="object-card__notice object-card__notice--warning">${canEnter.message}</div>`;
                         if (canEnter.activeObjectId) {
-                            entryWarning += `<div class="entry-warning" style="margin-top: 5px; cursor: pointer;" onclick="map.setCenter([${objectsData.find(o => o.id == canEnter.activeObjectId).latitude}, ${objectsData.find(o => o.id == canEnter.activeObjectId).longitude}], 17)">📍 Перейти к активному объекту ${canEnter.activeObjectId}</div>`;
+                            const activeObj = objectsData.find(o => o.id == canEnter.activeObjectId);
+                            if (activeObj) {
+                                notices += `<button class="object-card__link" onclick="map.setCenter([${activeObj.latitude}, ${activeObj.longitude}], 17); openObjectDetails(${activeObj.id});">📍 Перейти к активному объекту ${canEnter.activeObjectId}</button>`;
+                            }
                         }
                     }
                 } else if (isActive && canMarkEntryExit) {
-                    entryExitButtons = `
-                        <div class="entry-exit-buttons">
-                            <button class="exit-btn" onclick="markExit(${obj.id})">🚪 Выход</button>
-                        </div>
-                    `;
-                    
+                    entrySection = `<div class="object-card__actions"><button class="object-card__button object-card__button--primary" onclick="markExit(${obj.id})">🚪 Выход</button></div>`;
                     if (userAccessRights === 'Император' || userAccessRights === 'Администратор') {
-                        entryExitButtons += `
-                            <div class="entry-exit-buttons">
-                                <button class="cancel-entry-btn" onclick="cancelEntry(${obj.id})">❌ Отменить вход</button>
-                            </div>
-                        `;
+                        entrySection += `<div class="object-card__actions"><button class="object-card__button object-card__button--danger" onclick="cancelEntry(${obj.id})">Отменить вход</button></div>`;
                     }
                 } else if (!canMarkEntryExit) {
-                    entryExitButtons = `
-                        <div style="margin-top: 10px; padding: 8px; background: #f8d7da; color: #721c24; border-radius: 4px; font-size: 12px;">
-                            ⚠️ Доступно только инспектору: ${obj.inspector}
-                        </div>
-                    `;
+                    notices += `<div class="object-card__notice object-card__notice--info">⚠️ Доступно только инспектору: ${obj.inspector}</div>`;
                 }
             } else {
-                entryExitButtons = `
-                    <div style="color: #999; text-align: center; margin-top: 10px;">
-                        🚫 Действия недоступны
-                    </div>
-                `;
+                notices += `<div class="object-card__notice object-card__notice--muted">🚫 Действия недоступны</div>`;
             }
 
-            const reassignSelect = (userAccessRights === 'Император' || userAccessRights === 'Администратор' && !isCompleted) ? `
-                <div style="margin-top: 10px;">
-                    <label><strong>🔄 Переназначить инспектора:</strong></label>
-                    <select class="reassign-select" onchange="reassignInspector(${obj.id}, this.value)">
-                        <option value="">-- Выберите инспектора --</option>
-                        ${Object.keys(window.INSPECTOR_HOMES || {}).map(inspector => {
-                            const style = getInspectorStyle(inspector);
-                            const statusText = style.status !== 'active' ? ` (${getStatusText(style.status)})` : '';
-                            const isCurrent = obj.inspector === inspector;
-                            return `<option value="${inspector}" ${isCurrent ? 'selected' : ''} ${style.status !== 'active' ? 'disabled' : ''}>
-                                ${style.icon} ${inspector}${statusText} ${isCurrent ? ' ← текущий' : ''}
-                            </option>`;
-                        }).join('')}
-                    </select>
+            const reassignSelect = (userAccessRights === 'Император' || (userAccessRights === 'Администратор' && !isCompleted)) ? `
+                <div class="object-card__section object-card__section--reassign">
+                  <label class="object-card__label">Переназначить инспектора</label>
+                  <select class="object-card__select" onchange="reassignInspector(${obj.id}, this.value)">
+                    <option value="">-- Выберите инспектора --</option>
+                    ${Object.keys(window.INSPECTOR_HOMES || {}).map(inspector => {
+                      const style = getInspectorStyle(inspector);
+                      const statusText = style.status !== 'active' ? ` (${getStatusText(style.status)})` : '';
+                      const isCurrent = obj.inspector === inspector;
+                      const disabled = style.status !== 'active' ? 'disabled' : '';
+                      return `<option value="${inspector}" ${isCurrent ? 'selected' : ''} ${disabled}>${style.icon} ${inspector}${statusText} ${isCurrent ? ' ← текущий' : ''}</option>`;
+                    }).join('')}
+                  </select>
                 </div>
-            ` : '';
+              ` : '';
+
+            const inspectorDisplay = obj.inspector || 'Не назначен';
 
             return `
-                <div class="balloon-content">
-                    <h3>${icon} Точка №${obj.id} (${obj.list || 'Без списка'})</h3>
-                    <p><strong>Адрес:</strong> ${obj.address}</p>
-                    <p><strong>Инспектор:</strong> ${obj.inspector || 'Не назначен'}</p>
-                    ${statusBadge}
-                    
-                    <div class="button-group">
-                        <button class="coordinates-btn" onclick="copyCoordinates('${coordinates}')">📋 Координаты</button>
+                <div class="object-card">
+                    <div class="object-card__header">
+                        <div class="object-card__title">
+                            <span class="object-card__emoji">${icon || '📍'}</span>
+                            <div>
+                                <div class="object-card__name">Точка №${obj.id}</div>
+                                <div class="object-card__meta">${obj.list || 'Без списка'}</div>
+                            </div>
+                        </div>
+                        <span class="${badgeClass}">${badgeText}</span>
+                    </div>
+
+                    <div class="object-card__info">
+                        <div class="object-card__row">
+                            <span class="object-card__label">Адрес</span>
+                            <span class="object-card__value">${obj.address || '—'}</span>
+                        </div>
+                        <div class="object-card__row">
+                            <span class="object-card__label">Инспектор</span>
+                            <span class="object-card__value">${inspectorDisplay}</span>
+                        </div>
+                    </div>
+
+                    <div class="object-card__actions">
+                        <button class="object-card__button object-card__button--primary" onclick="copyCoordinates('${coordinates}')">📍 Координаты</button>
                         ${checklistButton}
                         ${yandexDiskButton}
                     </div>
-
-                    ${entryExitButtons}
-                    ${entryWarning}
+                    ${entrySection}
+                    ${notices}
                     ${reassignSelect}
                 </div>
             `;
         }
+
+        function renderObjectDetails(object) {
+            const content = document.getElementById('objectDetailsContent');
+            if (!content) return;
+            const style = getInspectorStyle(object.inspector);
+            content.innerHTML = getBalloonContent(object, style.icon);
+            const holder = document.createElement('div');
+            holder.id = 'checklistFormContainer';
+            content.appendChild(holder);
+            const uploader = document.createElement('div');
+            uploader.id = 'photoUploaderContainer';
+            content.appendChild(uploader);
+        }
+
+        function openObjectDetails(objectId) {
+            const object = objectsData.find(obj => obj.id == objectId);
+            const overlay = document.getElementById('objectDetailsOverlay');
+            if (!object || !overlay) return;
+            try {
+                if (objectManager && objectManager.objects && objectManager.objects.balloon) {
+                    objectManager.objects.balloon.close();
+                }
+                if (activeObjectsLayer && activeObjectsLayer.objects && activeObjectsLayer.objects.balloon) {
+                    activeObjectsLayer.objects.balloon.close();
+                }
+            } catch (_) {}
+            renderObjectDetails(object);
+            overlay.classList.add('object-details--visible');
+            overlay.classList.remove('hidden');
+            document.body.classList.add('object-details-open');
+        }
+
+        function closeObjectDetails() {
+            const overlay = document.getElementById('objectDetailsOverlay');
+            if (!overlay) return;
+            overlay.classList.remove('object-details--visible');
+            overlay.classList.add('hidden');
+            document.body.classList.remove('object-details-open');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('objectDetailsOverlay');
+            if (overlay) {
+                const backdrop = overlay.querySelector('.object-details__backdrop');
+                if (backdrop) {
+                    backdrop.addEventListener('click', function() { closeObjectDetails(); });
+                }
+            }
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeObjectDetails();
+                }
+            });
+        });
 
         function checkInspectorActiveObject(inspector) {
             if (!inspector) return null;
@@ -2375,7 +2514,9 @@ function reassignInspector(objectId, newInspector) {
     
     console.log('🟡 Переназначение:', objectId, '→', newInspector);
     
-    // 🔥 ЗАКРЫВАЕМ БАЛЛУН ПЕРЕД ВЫПОЛНЕНИЕМ ДЕЙСТВИЯ
+    // 🔥 СРАЗУ ЗАКРЫВАЕМ ОКНО ДЕТАЛЕЙ
+    try { closeObjectDetails(); } catch (_) {}
+    // 🔥 ЗАКРЫВАЕМ СТАРЫЕ ЯНДЕКС БАЛЛУНЫ
     objectManager.objects.balloon.close();
     activeObjectsLayer.objects.balloon.close();
     
@@ -2401,6 +2542,9 @@ function reassignInspector(objectId, newInspector) {
                 const isActive = object.entryTime && !object.exitTime;
                 updateSinglePointOnMap(objectId, isActive ? 'active' : 'new');
             }
+
+            // 🔥 СРАЗУ ЗАКРЫВАЕМ ОКНО ДЕТАЛЕЙ
+            closeObjectDetails();
             
             // 🔥 АВТОМАТИЧЕСКОЕ ОБНОВЛЕНИЕ ФИЛЬТРОВ ЧЕРЕЗ 3 СЕКУНДЫ
             setTimeout(() => {
@@ -2459,7 +2603,7 @@ function reassignInspector(objectId, newInspector) {
             window[callbackName] = function(result) {
                 cleanupCallback();
                 if (result.success) {
-                    isWorkDayOpen = result.isWorkDayOpen;
+                    isWorkDayOpen = !!result.open;
                     
                     if (isWorkDayOpen) {
                         saveWorkDayStatus(true);
@@ -2518,7 +2662,7 @@ function reassignInspector(objectId, newInspector) {
     }
 }
 
-        function startWorkDay() {
+        function startWorkDay(note) {
             if (userAccessRights === 'Император' || userAccessRights === 'Администратор') {
                 showNotification('❌ Администратор не может открывать рабочий день', 'error');
                 return;
@@ -2538,7 +2682,9 @@ function reassignInspector(objectId, newInspector) {
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const coords = `${position.coords.latitude}, ${position.coords.longitude}`;
+                    const lat = Number(position.coords.latitude).toFixed(4);
+                    const lon = Number(position.coords.longitude).toFixed(4);
+                    const coords = `${lat}, ${lon}`;
                     const startTime = new Date().toISOString();
                     
                     const callbackName = 'startWorkDayCallback_' + Date.now();
@@ -2565,7 +2711,8 @@ function reassignInspector(objectId, newInspector) {
                         }
                     };
                     
-                    const url = `${SCRIPT_URL}?action=startWorkDay&inspector=${encodeURIComponent(currentUser)}&coords=${encodeURIComponent(coords)}&callback=${callbackName}`;
+                    const combinedNote = `${note||''} (${coords})`;
+                    const url = `${SCRIPT_URL}?action=startWorkDay&inspector=${encodeURIComponent(currentUser)}&coords=${encodeURIComponent(coords)}&note=${encodeURIComponent(combinedNote)}&entryCoord=${encodeURIComponent(coords)}&entryNote=${encodeURIComponent(note||'')}&callback=${callbackName}`;
                     const script = document.createElement('script');
                     script.src = url;
                     script.onerror = function() {
@@ -2586,7 +2733,7 @@ function reassignInspector(objectId, newInspector) {
             );
         }
 
-        function endWorkDay() {
+        function endWorkDay(note) {
             if (userAccessRights === 'Император' || userAccessRights === 'Администратор') {
                 showNotification('❌ Администратор не может закрывать рабочий день', 'error');
                 return;
@@ -2606,7 +2753,9 @@ function reassignInspector(objectId, newInspector) {
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const coords = `${position.coords.latitude}, ${position.coords.longitude}`;
+                    const lat = Number(position.coords.latitude).toFixed(4);
+                    const lon = Number(position.coords.longitude).toFixed(4);
+                    const coords = `${lat}, ${lon}`;
                     
                     const callbackName = 'endWorkDayCallback_' + Date.now();
                     
@@ -2632,7 +2781,8 @@ function reassignInspector(objectId, newInspector) {
                         }
                     };
                     
-                    const url = `${SCRIPT_URL}?action=endWorkDay&inspector=${encodeURIComponent(currentUser)}&coords=${encodeURIComponent(coords)}&callback=${callbackName}`;
+                    const combinedNote = `${note||''} (${coords})`;
+                    const url = `${SCRIPT_URL}?action=endWorkDay&inspector=${encodeURIComponent(currentUser)}&coords=${encodeURIComponent(coords)}&note=${encodeURIComponent(combinedNote)}&exitCoord=${encodeURIComponent(coords)}&exitNote=${encodeURIComponent(note||'')}&callback=${callbackName}`;
                     const script = document.createElement('script');
                     script.src = url;
                     script.onerror = function() {
@@ -2651,6 +2801,33 @@ function reassignInspector(objectId, newInspector) {
                     maximumAge: 60000
                 }
             );
+        }
+
+        function openWorkdayModal(action) {
+            const modal = document.getElementById('workdayModal');
+            const title = document.getElementById('workdayModalTitle');
+            const info = document.getElementById('workdayModalInfo');
+            const comment = document.getElementById('workdayCommentInput');
+            modal.dataset.action = action;
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            title.textContent = action === 'open' ? 'Согласование открытия рабочего дня' : 'Согласование закрытия рабочего дня';
+            info.innerHTML = `Пользователь: ${currentUser}<br>Время: ${timeString}`;
+            if (comment) comment.value = '';
+            modal.classList.remove('hidden');
+        }
+
+        function closeWorkdayModal() {
+            const modal = document.getElementById('workdayModal');
+            modal.classList.add('hidden');
+        }
+
+        function confirmWorkdayAction() {
+            const modal = document.getElementById('workdayModal');
+            const action = modal.dataset.action;
+            const note = (document.getElementById('workdayCommentInput') || {}).value || '';
+            closeWorkdayModal();
+            if (action === 'open') startWorkDay(note); else endWorkDay(note);
         }
 
         // 🔥 АДМИНИСТРАТИВНЫЕ ФУНКЦИИ
@@ -2702,8 +2879,8 @@ function reassignInspector(objectId, newInspector) {
 
         // 🔥 УПРАВЛЕНИЕ МЕНЮ
         function closeAllMenus() {
-            document.getElementById('filterAccessMenu').style.display = 'none';
-            document.getElementById('inspectorManagementMenu').style.display = 'none';
+            const mgmt = document.getElementById('inspectorManagementMenu');
+            if (mgmt) mgmt.style.display = 'none';
             activeMenu = null;
         }
 
@@ -2720,65 +2897,71 @@ function reassignInspector(objectId, newInspector) {
             }
         }
 
-        function toggleFilterAccessMenu() {
-            const menu = document.getElementById('filterAccessMenu');
-            if (menu.style.display === 'flex') {
-                menu.style.display = 'none';
-                activeMenu = null;
-            } else {
-                closeAllMenus();
-                menu.style.display = 'flex';
-                activeMenu = 'access';
-                updateFilterAccessContent();
-            }
-        }
+        function toggleFilterAccessMenu() {}
 
         function closeInspectorManagement() {
             document.getElementById('inspectorManagementMenu').style.display = 'none';
             activeMenu = null;
         }
 
-        function closeFilterAccessMenu() {
-            document.getElementById('filterAccessMenu').style.display = 'none';
-            activeMenu = null;
-        }
+        function closeFilterAccessMenu() {}
 
         // 🔥 УПРАВЛЕНИЕ ИНСПЕКТОРАМИ - УЛУЧШЕННАЯ ВЕРСИЯ
         function updateInspectorManagementContent() {
             const managementContent = document.getElementById('inspectorManagementContent');
             managementContent.innerHTML = '';
-            
             const inspectors = Object.keys(window.INSPECTORS_CONFIG || {});
-            
             inspectors.forEach(inspector => {
                 const accordion = document.createElement('div');
                 accordion.className = 'accordion';
-                
                 const style = getInspectorStyle(inspector);
-                
+                const statusHtml = createStatusSection(inspector, style);
+                const colorHtml = createColorSection(inspector, style);
+                const iconHtml = createIconSection(inspector, style);
                 accordion.innerHTML = `
                     <div class="accordion-header" onclick="toggleAccordion(this)">
                         ${style.icon} ${inspector}
                         <span>▼</span>
                     </div>
                     <div class="accordion-content">
-                        ${createStatusSection(inspector, style)}
-                        ${createColorSection(inspector, style)}
-                        ${createIconSection(inspector, style)}
-                        <button class="apply-changes-btn" onclick="applyInspectorChanges('${inspector}')">
-                            💾 Применить изменения
-                        </button>
+                        <div class="mgmt-tabs">
+                            <button class="mgmt-tab-btn active" onclick="showMgmtTab('${inspector}','status')">Статус</button>
+                            <button class="mgmt-tab-btn" onclick="showMgmtTab('${inspector}','color')">Цвет</button>
+                            <button class="mgmt-tab-btn" onclick="showMgmtTab('${inspector}','icon')">Иконка</button>
+                        </div>
+                        <div class="mgmt-section active" data-tab="status">${statusHtml}</div>
+                        <div class="mgmt-section" data-tab="color">${colorHtml}</div>
+                        <div class="mgmt-section" data-tab="icon">${iconHtml}</div>
+                        <button class="apply-changes-btn" onclick="applyInspectorChanges('${inspector}')">💾 Применить изменения</button>
                     </div>
                 `;
-                
                 managementContent.appendChild(accordion);
+            });
+        }
+
+        function showMgmtTab(inspector, tab) {
+            const accordions = document.querySelectorAll('.accordion');
+            accordions.forEach(acc => {
+                const header = acc.querySelector('.accordion-header');
+                if (header && header.textContent.indexOf(inspector) >= 0) {
+                    const content = header.nextElementSibling;
+                    content.querySelectorAll('.mgmt-section').forEach(sec => {
+                        sec.classList.toggle('active', sec.getAttribute('data-tab') === tab);
+                    });
+                    content.querySelectorAll('.mgmt-tab-btn').forEach(btn => {
+                        const text = btn.textContent;
+                        const isStatus = tab === 'status' && text.indexOf('Статус') >= 0;
+                        const isColor = tab === 'color' && text.indexOf('Цвет') >= 0;
+                        const isIcon = tab === 'icon' && text.indexOf('Иконка') >= 0;
+                        btn.classList.toggle('active', isStatus || isColor || isIcon);
+                    });
+                }
             });
         }
 
         function createStatusSection(inspector, style) {
             return `
                 <div class="management-section">
-                    <div class="management-section-title">📊 Статус инспектора</div>
                     <select class="status-select" id="status_${inspector}" onchange="updateInspectorConfig('${inspector}', 'status', this.value)">
                         <option value="active" ${style.status === 'active' ? 'selected' : ''}>🟢 Активен</option>
                         <option value="vacation" ${style.status === 'vacation' ? 'selected' : ''}>🏖️ В отпуске</option>
@@ -2803,7 +2986,6 @@ function reassignInspector(objectId, newInspector) {
             
             return `
                 <div class="management-section">
-                    <div class="management-section-title">🎨 Цвет инспектора</div>
                     <div class="management-controls">
                         <span class="color-preview" style="background-color: ${style.color}"></span>
                         <span>${style.color}</span>
@@ -2817,13 +2999,14 @@ function reassignInspector(objectId, newInspector) {
 
         function createIconSection(inspector, style) {
             let iconOptions = '<option value="">-- Выберите иконку --</option>';
-            Object.keys(availableIcons).forEach(icon => {
-                iconOptions += `<option value="${icon}" ${style.icon === icon ? 'selected' : ''}>${icon} ${availableIcons[icon]}</option>`;
+            Object.keys(availableIcons).forEach(key => {
+                if (key === 'icons' || key === 'default') return;
+                const emoji = availableIcons[key];
+                if (!emoji || typeof emoji !== 'string') return;
+                iconOptions += `<option value="${emoji}" ${style.icon === emoji ? 'selected' : ''}>${emoji}</option>`;
             });
-            
             return `
                 <div class="management-section">
-                    <div class="management-section-title">🖼️ Иконка инспектора</div>
                     <select class="icon-select" id="icon_${inspector}" onchange="updateInspectorConfig('${inspector}', 'icon', this.value)">
                         ${iconOptions}
                     </select>
@@ -2852,6 +3035,9 @@ function reassignInspector(objectId, newInspector) {
                     }
                 }
             });
+            // Лайф‑обновление фильтров
+            const live = { color };
+            updateInspectorInFilters(inspector, live);
         }
 
         function updateInspectorConfig(inspector, field, value) {
@@ -2860,6 +3046,7 @@ function reassignInspector(objectId, newInspector) {
             if (window.INSPECTORS_CONFIG[inspector]) {
                 window.INSPECTORS_CONFIG[inspector][field] = value;
             }
+            const live = {}; live[field] = value; updateInspectorInFilters(inspector, live);
         }
 
         function applyInspectorChanges(inspector) {
@@ -2880,6 +3067,7 @@ function reassignInspector(objectId, newInspector) {
                 }
             } else {
                 saveInspectorConfig(inspector, config, true);
+                upsertInspectorCache(inspector, config);
             }
         }
 
@@ -2903,11 +3091,23 @@ function reassignInspector(objectId, newInspector) {
                 
                 if (result.success) {
                     console.log(`✅ Конфигурация сохранена для ${inspector}`);
+                    upsertInspectorCache(inspector, config);
                     
                     if (applyChanges) {
                         // 🔥 НЕМЕДЛЕННОЕ ПРИМЕНЕНИЕ ИЗМЕНЕНИЙ К ВСЕМУ
                         updateInspectorInFilters(inspector, config);
                         
+                        // 🔥 ЕСЛИ СТАТУС НЕ АКТИВЕН — МГНОВЕННО ПЕРЕДАЕМ ТОЧКИ ADMIN НА КЛИЕНТЕ
+                        if (config.status && config.status !== 'active') {
+                            const transferred = objectsData.filter(o => o.inspector === inspector);
+                            transferred.forEach(o => {
+                                o.inspector = 'Admin';
+                                const isActive = o.entryTime && !o.exitTime;
+                                const isCompleted = !!o.exitTime;
+                                updateSinglePointOnMap(o.id, isCompleted ? 'completed' : (isActive ? 'active' : 'new'));
+                            });
+                        }
+
                         // 🔥 АВТОМАТИЧЕСКИЙ СБРОС И ПРИМЕНЕНИЕ ФИЛЬТРОВ ДЛЯ ОБНОВЛЕНИЯ ЦВЕТОВ
                         deselectAllLists();
                         setTimeout(() => {
@@ -2934,7 +3134,7 @@ function reassignInspector(objectId, newInspector) {
                     setTimeout(() => {
                         closeInspectorManagement();
                     }, 500);
-                    
+                
                 } else {
                     showNotification('❌ Ошибка сохранения: ' + result.message, 'error');
                 }
@@ -2989,89 +3189,9 @@ function reassignInspector(objectId, newInspector) {
             });
         }
 
-        // 🔥 ДОСТУП К ФИЛЬТРАМ
-        function updateFilterAccessContent() {
-            const accessContent = document.getElementById('filterAccessContent');
-            accessContent.innerHTML = '';
-            
-            const inspectors = Object.keys(window.INSPECTORS_CONFIG || {}).filter(inspector => 
-                inspector !== 'Admin' && inspector !== 'Юсупов Артур Русланович'
-            );
-            
-            inspectors.forEach(inspector => {
-                const accordion = document.createElement('div');
-                accordion.className = 'accordion';
-                
-                const currentAccess = filterAccessSettings[inspector] || [];
-                const isAllAccess = currentAccess === true;
-                
-                let checkboxesHTML = '';
-                const otherInspectors = inspectors.filter(i => i !== inspector);
-                
-                otherInspectors.forEach(otherInspector => {
-                    const isChecked = isAllAccess || (Array.isArray(currentAccess) && currentAccess.includes(otherInspector));
-                    checkboxesHTML += `
-                        <div class="filter-access-item">
-                            <input type="checkbox" id="access_${inspector}_${otherInspector}" 
-                                   ${isChecked ? 'checked' : ''}>
-                            <label for="access_${inspector}_${otherInspector}">${otherInspector}</label>
-                        </div>
-                    `;
-                });
-                
-                const allChecked = otherInspectors.every(otherInspector => {
-                    const isChecked = isAllAccess || (Array.isArray(currentAccess) && currentAccess.includes(otherInspector));
-                    return isChecked;
-                });
-                
-                accordion.innerHTML = `
-                    <div class="accordion-header" onclick="toggleAccordion(this)">
-                        👤 ${inspector}
-                        <span>▼</span>
-                    </div>
-                    <div class="accordion-content">
-                        <button class="select-all-btn" onclick="toggleAllForInspector('${inspector}')">
-                            ${allChecked ? '❌ Сбросить всех' : '✅ Выбрать всех'} инспекторов
-                        </button>
-                        <input type="text" class="search-inspector" placeholder="Поиск по ФИО..." onkeyup="filterInspectors(this)">
-                        <div class="filter-access-section">
-                            <div class="filter-access-section-title">${inspector} может видеть:</div>
-                            ${checkboxesHTML}
-                        </div>
-                    </div>
-                `;
-                
-                accessContent.appendChild(accordion);
-            });
-            
-            const accessAll = document.getElementById('accessAll');
-            const allHaveFullAccess = inspectors.every(inspector => {
-                const currentAccess = filterAccessSettings[inspector] || [];
-                return currentAccess === true;
-            });
-            accessAll.checked = allHaveFullAccess;
-        }
+        function updateFilterAccessContent() {}
 
-        function toggleAllForInspector(inspector) {
-            const accordions = document.querySelectorAll('.accordion');
-            accordions.forEach(accordion => {
-                const header = accordion.querySelector('.accordion-header');
-                if (header && header.textContent.includes(inspector)) {
-                    const content = header.nextElementSibling;
-                    const checkboxes = content.querySelectorAll('input[type="checkbox"]');
-                    const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-                    
-                    checkboxes.forEach(checkbox => {
-                        checkbox.checked = !allChecked;
-                    });
-                    
-                    const button = content.querySelector('.select-all-btn');
-                    if (button) {
-                        button.textContent = allChecked ? '✅ Выбрать всех инспекторов' : '❌ Сбросить всех инспекторов';
-                    }
-                }
-            });
-        }
+        function toggleAllForInspector(inspector) {}
 
         function toggleAccordion(header) {
             const content = header.nextElementSibling;
@@ -3102,94 +3222,11 @@ function reassignInspector(objectId, newInspector) {
             });
         }
 
-        function filterAccessInspectors() {
-            const searchText = document.getElementById('searchAccess').value.toLowerCase();
-            const accordions = document.querySelectorAll('#filterAccessContent .accordion');
-            
-            accordions.forEach(accordion => {
-                const header = accordion.querySelector('.accordion-header');
-                const inspectorName = header.textContent.toLowerCase();
-                
-                if (inspectorName.includes(searchText)) {
-                    accordion.style.display = 'block';
-                } else {
-                    accordion.style.display = 'none';
-                }
-            });
-        }
+        function filterAccessInspectors() {}
 
-        function toggleAllFilterAccess() {
-            const accessAll = document.getElementById('accessAll').checked;
-            const checkboxes = document.querySelectorAll('#filterAccessContent input[type="checkbox"]');
-            
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = accessAll;
-            });
-        }
+        function toggleAllFilterAccess() {}
 
-        function saveFilterAccess() {
-            const inspectors = Object.keys(window.INSPECTORS_CONFIG || {}).filter(inspector => 
-                inspector !== 'Admin' && inspector !== 'Юсупов Артур Русланович'
-            );
-            const newSettings = {};
-            
-            const accessAll = document.getElementById('accessAll').checked;
-            
-            if (accessAll) {
-                inspectors.forEach(inspector => {
-                    newSettings[inspector] = true;
-                });
-            } else {
-                inspectors.forEach(inspector => {
-                    const visibleInspectors = [];
-                    inspectors.forEach(otherInspector => {
-                        if (otherInspector !== inspector) {
-                            const checkbox = document.getElementById(`access_${inspector}_${otherInspector}`);
-                            if (checkbox && checkbox.checked) {
-                                visibleInspectors.push(otherInspector);
-                            }
-                        }
-                    });
-                    newSettings[inspector] = visibleInspectors;
-                });
-            }
-            
-            showNotification('🔄 Сохраняем настройки доступа...', 'success');
-            
-            const callbackName = 'saveAccessCallback_' + Date.now();
-            
-            const cleanupCallback = function() {
-                setTimeout(() => {
-                    if (window[callbackName]) {
-                        delete window[callbackName];
-                    }
-                }, 10000);
-            };
-            
-            window[callbackName] = function(result) {
-                cleanupCallback();
-                if (result.success) {
-                    showNotification('✅ Настройки доступа сохранены', 'success');
-                    filterAccessSettings = newSettings;
-                    closeFilterAccessMenu();
-                    initInterface();
-                } else {
-                    showNotification('❌ Ошибка сохранения: ' + result.message, 'error');
-                }
-            };
-            
-            const url = `${SCRIPT_URL}?action=saveFilterAccessSettings&settings=${encodeURIComponent(JSON.stringify(newSettings))}&callback=${callbackName}`;
-            const script = document.createElement('script');
-            script.src = url;
-            
-            script.onerror = function() {
-                cleanupCallback();
-                showNotification('❌ Ошибка соединения с сервером', 'error');
-            };
-            
-            document.head.appendChild(script);
-            cleanupCallback();
-        }
+        function saveFilterAccess() {}
 
         // 🔥 ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 function selectAllInspectors() {
@@ -3378,9 +3415,14 @@ function selectAllInspectors() {
 
         // 🔥 ЗАКРЫТИЕ МЕНЮ ПО КЛИКУ НА КАРТУ
         document.getElementById('map').addEventListener('click', function(e) {
-            if (activeMenu && e.target.closest('.filter-access-menu, .inspector-management-menu') === null) {
+            if (activeMenu && e.target.closest('.inspector-management-menu') === null) {
                 closeAllMenus();
             }
+        });
+    </script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function(){
+            try { updateWorkDayButtons(); } catch(e) {}
         });
     </script>
 </body>
