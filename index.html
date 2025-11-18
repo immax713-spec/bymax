@@ -1451,6 +1451,23 @@ function resetFiltersToDefault() {
             closeAllMenus();
         }
 
+        function startAutoRefresh() {
+            try { stopAutoRefresh(); } catch(_) {}
+            autoRefreshTimer = setInterval(() => {
+                if (currentUser) {
+                    loadData();
+                    try { loadFiltersFromServerAndApply(); } catch(_) {}
+                }
+            }, 60000);
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshTimer) {
+                clearInterval(autoRefreshTimer);
+                autoRefreshTimer = null;
+            }
+        }
+
         // 🔥 КАРТА И ДАННЫЕ
         function initMap() {
             console.log('🟡 Yandex Maps ready');
@@ -3510,19 +3527,3 @@ document.addEventListener('visibilitychange', function() {
     </script>
 </body>
 </html>
-        function startAutoRefresh() {
-            try { stopAutoRefresh(); } catch(_) {}
-            autoRefreshTimer = setInterval(() => {
-                if (currentUser) {
-                    loadData();
-                    try { loadFiltersFromServerAndApply(); } catch(_) {}
-                }
-            }, 60000);
-        }
-
-        function stopAutoRefresh() {
-            if (autoRefreshTimer) {
-                clearInterval(autoRefreshTimer);
-                autoRefreshTimer = null;
-            }
-        }
