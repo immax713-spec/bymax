@@ -958,6 +958,7 @@ let availableColors = [];
  
 let activeMenu = null;
 let isSidebarCollapsed = false;
+let autoRefreshTimer = null;
 
 // 🔥 СОХРАНЕНИЕ СОСТОЯНИЯ ФИЛЬТРОВ
 function saveFilterState() {
@@ -1377,6 +1378,8 @@ function resetFiltersToDefault() {
             if (!checkMobileDevice()) {
                 document.getElementById('mobileToggleBtn').style.display = 'none';
             }
+
+            startAutoRefresh();
         }
 
         function login() {
@@ -1436,6 +1439,7 @@ function resetFiltersToDefault() {
 
         function logout() {
             clearSession();
+            stopAutoRefresh();
             document.getElementById('loginOverlay').style.display = 'flex';
             document.getElementById('mainContainer').style.display = 'none';
             document.getElementById('userInfo').style.display = 'none';
@@ -3484,11 +3488,13 @@ function selectAllInspectors() {
             }
         });
 
-        document.addEventListener('visibilitychange', function() {
-            if (!document.hidden && currentUser) {
-                saveSession();
-            }
-        });
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && currentUser) {
+        saveSession();
+        try { loadData(); } catch(_) {}
+        try { loadFiltersFromServerAndApply(); } catch(_) {}
+    }
+});
 
         // 🔥 ЗАКРЫТИЕ МЕНЮ ПО КЛИКУ НА КАРТУ
         document.getElementById('map').addEventListener('click', function(e) {
@@ -3504,3 +3510,19 @@ function selectAllInspectors() {
     </script>
 </body>
 </html>
+        function startAutoRefresh() {
+            try { stopAutoRefresh(); } catch(_) {}
+            autoRefreshTimer = setInterval(() => {
+                if (currentUser) {
+                    loadData();
+                    try { loadFiltersFromServerAndApply(); } catch(_) {}
+                }
+            }, 60000);
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshTimer) {
+                clearInterval(autoRefreshTimer);
+                autoRefreshTimer = null;
+            }
+        }
