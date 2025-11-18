@@ -895,7 +895,7 @@
 
     <script type="text/javascript">
         // 🔥 КОНФИГУРАЦИЯ
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1Fxion7PTP8GtiuIQPDQ7KXKaJ6Sq1AxSUGzC5SQD21VPcwG4oQri91_ewdPrEleI/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxvGJX-Ui9ux1W89B8fQs6TJsf58vc_I5AuTx9dxpqTsyQSX6Aq99RNmHIdNet_SNlH/exec';
         
         // 🔥 КЛЮЧИ ДЛЯ LOCALSTORAGE
 const SESSION_KEY = 'map_session';
@@ -1587,12 +1587,12 @@ function resetFiltersToDefault() {
             document.head.appendChild(script);
         }
 
-       function processServerData(data) {
+function processServerData(data) {
     // 🔥 ВОЗВРАЩАЕМ ОРИГИНАЛЬНЫЕ ID (без преобразования в строки!)
     objectsData = data.points;
     
     window.INSPECTORS_CONFIG = data.inspectorsConfig || {};
-    mergeLocalInspectorConfig();
+    try { localStorage.removeItem(INSPECTORS_CACHE_KEY); localStorage.removeItem(INSPECTORS_CACHE_TIMESTAMP); } catch(_) {}
     window.INSPECTOR_HOMES = data.inspectorsHomes || {};
     availableIcons = data.availableIcons || {};
     availableColors = data.availableColors || [];
@@ -3220,13 +3220,13 @@ function reassignInspector(objectId, newInspector) {
                         }
                     }
                     
-                    if (result.transferredObjects > 0) {
-                        showNotification(`✅ Конфигурация сохранена. Перенесено объектов: ${result.transferredObjects}`, 'success');
-                        // 🔥 ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ ПРИ ПЕРЕДАЧЕ ОБЪЕКТОВ
-                        setTimeout(() => loadData(), 1000);
-                    } else {
-                        showNotification(`✅ Настройки для ${inspector} применены`, 'success');
-                    }
+                    showNotification(
+                        result.transferredObjects > 0
+                            ? `✅ Конфигурация сохранена. Перенесено объектов: ${result.transferredObjects}`
+                            : `✅ Настройки для ${inspector} применены`,
+                        'success'
+                    );
+                    setTimeout(() => loadData(), 500);
                     
                     // 🔥 ЗАКРЫВАЕМ МЕНЮ ПОСЛЕ ПРИМЕНЕНИЯ
                     setTimeout(() => {
