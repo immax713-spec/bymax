@@ -970,6 +970,7 @@ function saveFilterState() {
         };
         localStorage.setItem(FILTERS_STATE_KEY, JSON.stringify(filterState));
         console.log('✅ Состояние фильтров сохранено');
+        try { saveGlobalFilters(filterState); } catch (_) {}
     } catch (error) {
         console.error('❌ Ошибка сохранения фильтров:', error);
     }
@@ -981,31 +982,56 @@ function loadFilterState() {
         const saved = localStorage.getItem(FILTERS_STATE_KEY);
         if (saved) {
             const filterState = JSON.parse(saved);
-            
-            // 🔥 ВОССТАНАВЛИВАЕМ ИНСПЕКТОРОВ
-            const inspectorCheckboxes = document.querySelectorAll('#inspectorsList input[type="checkbox"]');
-            inspectorCheckboxes.forEach(checkbox => {
-                const inspector = checkbox.id.replace('insp_', '');
-                checkbox.checked = filterState.inspectors.includes(inspector);
-            });
-            
-            // 🔥 ВОССТАНАВЛИВАЕМ СПИСКИ
-            const listCheckboxes = document.querySelectorAll('#listsList input[type="checkbox"]');
-            listCheckboxes.forEach(checkbox => {
-                const list = checkbox.id.replace('list_', '');
-                checkbox.checked = filterState.lists.includes(list);
-            });
-            
-            // 🔥 ВОССТАНАВЛИВАЕМ ЧЕКБОКС "МОНИТОРИНГ"
-            document.getElementById('showHidden').checked = filterState.showHidden;
-            
-            console.log('✅ Состояние фильтров восстановлено');
+            applyFilterState(filterState);
+            console.log('✅ Состояние фильтров восстановлено (локально)');
             return true;
         }
     } catch (error) {
         console.error('❌ Ошибка загрузки фильтров:', error);
     }
     return false;
+}
+
+function applyFilterState(filterState) {
+    const inspectorCheckboxes = document.querySelectorAll('#inspectorsList input[type="checkbox"]');
+    inspectorCheckboxes.forEach(checkbox => {
+        const inspector = checkbox.id.replace('insp_', '');
+        checkbox.checked = filterState.inspectors.includes(inspector);
+    });
+    const listCheckboxes = document.querySelectorAll('#listsList input[type="checkbox"]');
+    listCheckboxes.forEach(checkbox => {
+        const list = checkbox.id.replace('list_', '');
+        checkbox.checked = filterState.lists.includes(list);
+    });
+    document.getElementById('showHidden').checked = !!filterState.showHidden;
+}
+
+function saveGlobalFilters(state) {
+    const callbackName = 'saveGlobalFilters_' + Date.now();
+    const url = `${SCRIPT_URL}?action=saveGlobalFilters&state=${encodeURIComponent(JSON.stringify(state))}&callback=${callbackName}`;
+    const script = document.createElement('script');
+    window[callbackName] = function(result) { try { delete window[callbackName]; } catch(_){} };
+    script.src = url;
+    script.onerror = function(){ try { delete window[callbackName]; } catch(_){} };
+    document.head.appendChild(script);
+}
+
+function loadFiltersFromServerAndApply() {
+    const callbackName = 'getGlobalFilters_' + Date.now();
+    const url = `${SCRIPT_URL}?action=getGlobalFilters&callback=${callbackName}`;
+    const script = document.createElement('script');
+    window[callbackName] = function(result) {
+        try { delete window[callbackName]; } catch(_){}
+        if (result && result.success && result.state) {
+            applyFilterState(result.state);
+            localStorage.setItem(FILTERS_STATE_KEY, JSON.stringify(result.state));
+            updateFilters();
+            console.log('✅ Состояние фильтров восстановлено (сервер)');
+        }
+    };
+    script.src = url;
+    script.onerror = function(){ try { delete window[callbackName]; } catch(_){} };
+    document.head.appendChild(script);
 }
 
 // 🔥 СБРОС ФИЛЬТРОВ К СОСТОЯНИЮ "ПО УМОЛЧАНИЮ"
@@ -1682,6 +1708,7 @@ function resetFiltersToDefault() {
         }
         
         updateFilters();
+        try { loadFiltersFromServerAndApply(); } catch(_) {}
     }, 100);
         }
 
