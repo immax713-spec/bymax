@@ -895,7 +895,7 @@
 
     <script type="text/javascript">
         // 🔥 КОНФИГУРАЦИЯ
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzm7DciSJvpoTceJFVByuvTy9iPaYBURhnJwtkY6zSTySZl9rv84fU46Fmo3mMJXcoi/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1Fxion7PTP8GtiuIQPDQ7KXKaJ6Sq1AxSUGzC5SQD21VPcwG4oQri91_ewdPrEleI/exec';
         
         // 🔥 КЛЮЧИ ДЛЯ LOCALSTORAGE
 const SESSION_KEY = 'map_session';
@@ -935,10 +935,10 @@ function mergeLocalInspectorConfig() {
     Object.keys(cache).forEach(name => {
         const serverKey = serverKeysByNorm[normalize(name)] || name;
         if (!window.INSPECTORS_CONFIG[serverKey]) window.INSPECTORS_CONFIG[serverKey] = {};
-        const localCfg = cache[name];
-        window.INSPECTORS_CONFIG[serverKey].color = localCfg.color || window.INSPECTORS_CONFIG[serverKey].color;
-        window.INSPECTORS_CONFIG[serverKey].icon = localCfg.icon || window.INSPECTORS_CONFIG[serverKey].icon;
-        window.INSPECTORS_CONFIG[serverKey].status = localCfg.status || window.INSPECTORS_CONFIG[serverKey].status;
+        const localCfg = cache[name] || {};
+        window.INSPECTORS_CONFIG[serverKey].color = window.INSPECTORS_CONFIG[serverKey].color || localCfg.color;
+        window.INSPECTORS_CONFIG[serverKey].icon = window.INSPECTORS_CONFIG[serverKey].icon || localCfg.icon;
+        window.INSPECTORS_CONFIG[serverKey].status = window.INSPECTORS_CONFIG[serverKey].status || localCfg.status;
     });
 }
 const FILTERS_STATE_KEY = 'filters_state'; // <-- ЭТО НОВЫЙ КЛЮЧ
@@ -1457,6 +1457,7 @@ function resetFiltersToDefault() {
                 if (currentUser) {
                     loadData();
                     try { loadFiltersFromServerAndApply(); } catch(_) {}
+                    try { checkWorkDayStatus(); } catch(_) {}
                 }
             }, 60000);
         }
@@ -2682,10 +2683,9 @@ function reassignInspector(objectId, newInspector) {
             
             const localStatus = getWorkDayStatus();
             if (localStatus.isOpen) {
-                console.log('🔄 Восстанавливаем локальный статус рабочего дня: открыт');
+                console.log('🔄 Локально: рабочий день открыт — сверяем с сервером');
                 isWorkDayOpen = true;
                 updateWorkDayButtons();
-                return;
             }
             
             const callbackName = 'checkWorkDayCallback_' + Date.now();
