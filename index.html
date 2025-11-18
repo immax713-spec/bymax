@@ -10,11 +10,11 @@
     <meta name="theme-color" content="#8B0000">
     
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=52007aca-39bd-4a9c-87ef-4d9b730aeb71" type="text/javascript"></script>
-    <link rel="stylesheet" href="Приложение 1/assets/css/main.css">
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; height: 100vh; overflow: hidden; background: #f0f2f5; }
+        .hidden { display: none !important; }
 
         /* 🔥 СТИЛИ ЛОГИНА */
         .login-overlay { 
@@ -222,7 +222,7 @@
     font-size: 0.85rem;
     font-weight: bold;
     text-align: center;
-    background: #3498db;
+    background: linear-gradient(135deg,#1f6fb2,#3498db);
     color: white;
     transition: all 0.3s ease;
     flex: 1;
@@ -237,7 +237,6 @@
     font-size: 0.75rem;
     font-weight: bold;
     text-align: center;
-    background: #3498db;
     color: white;
     transition: all 0.3s ease;
     text-decoration: none;
@@ -247,19 +246,15 @@
 }
 
 /* Ховер-эффекты для всех кнопок */
-.control-button:hover, .list-control-button:hover, .admin-btn:hover, .inspector-btn:hover, .close-day-btn:hover {
-    background: #2980b9;
+.control-button:hover, .list-control-button:hover, .admin-btn:hover {
+    background: linear-gradient(135deg,#2f86c9,#3498db);
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 /* 🔥 ЦВЕТА ДЛЯ РАЗНЫХ ТИПОВ КНОПОК */
-.admin-btn { 
-    background: #3498db; 
-}
-.admin-btn:hover { 
-    background: #2980b9; 
-}
+.admin-btn { background: linear-gradient(135deg,#1f6fb2,#3498db); }
+.admin-btn:hover { background: linear-gradient(135deg,#2f86c9,#3498db); }
 
 .inspector-btn { 
     background: #90EE90; 
@@ -404,8 +399,8 @@
         .button-group { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
         .entry-exit-buttons { display: flex; gap: 4px; margin-top: 8px; }
         .entry-exit-buttons button { flex: 1; padding: 8px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
-        .entry-btn { background: #3498db; color: white; }
-        .entry-btn:hover { background: #2980b9; }
+        .entry-btn { background: linear-gradient(135deg,#1f6fb2,#3498db); color: white; }
+        .entry-btn:hover { background: linear-gradient(135deg,#2f86c9,#3498db); }
         .exit-btn { background: #27ae60; color: white; }
         .exit-btn:hover { background: #219a52; }
         .cancel-entry-btn { background: #e74c3c; color: white; }
@@ -505,11 +500,11 @@
         .icon-select, .status-select { width: 100%; padding: 6px; border: 2px solid #3498db; border-radius: 4px; margin-top: 5px; font-size: 0.85rem; }
 
         /* 🔥 МОБИЛЬНЫЙ РЕЖИМ - КНОПКА ПАНЕЛИ УПРАВЛЕНИЯ */
-      .mobile-toggle-btn {
+.mobile-toggle-btn {
     position: fixed;
     top: 100px;  
     right: 25px; 
-    background: #3498db;
+    background: linear-gradient(135deg,#1f6fb2,#3498db);
     color: white;
     border: none;
     padding: 8px 12px;
@@ -521,9 +516,7 @@
     display: none;
 }
 
-.mobile-toggle-btn:hover {
-    background: #2980b9;
-}
+.mobile-toggle-btn:hover { background: linear-gradient(135deg,#2f86c9,#3498db); }
 
 /* 🔥 БЛОК ПОЛЬЗОВАТЕЛЯ */
 .user-info { 
@@ -619,8 +612,8 @@
         }
 
         .mgmt-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
-        .mgmt-tab-btn { padding: 8px 12px; border: none; border-radius: 10px; background: #3498db; color: #fff; cursor: pointer; font-size: 0.9rem; font-weight: 600; }
-        .mgmt-tab-btn:hover { background: #2f86c9; }
+        .mgmt-tab-btn { padding: 8px 12px; border: none; border-radius: 10px; background: linear-gradient(135deg, #1f6fb2, #3498db); color: #fff; cursor: pointer; font-size: 0.9rem; font-weight: 600; }
+        .mgmt-tab-btn:hover { background: linear-gradient(135deg, #2f86c9, #3498db); }
         .mgmt-tab-btn.active { background: linear-gradient(135deg, #1f6fb2, #3498db); color: #fff; }
         .mgmt-section { display: none; }
         .mgmt-section.active { display: block; }
@@ -650,6 +643,63 @@
                 max-width: 220px;
                 padding: 6px;
             }
+        }
+        .object-details { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 1500; }
+        .object-details--visible { display: flex; }
+        .object-details.hidden { display: none; }
+        .object-details__backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45); }
+        .object-details__card { position: relative; background: #ffffff; border-radius: 22px; width: min(560px, 96vw); max-height: 90vh; overflow: hidden; padding: 30px 32px 34px; box-shadow: 0 28px 60px rgba(0, 0, 0, 0.25); z-index: 1; animation: objectDetailsIn 0.25s ease; }
+        .object-details__content { max-height: calc(90vh - 90px); overflow-y: auto; margin-top: 12px; padding-right: 24px; scrollbar-gutter: stable; position: relative; }
+        .object-details__close { position: absolute; top: 18px; right: 18px; width: 36px; height: 36px; border-radius: 50%; border: none; background: #f2f4f8; color: #2c3e50; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s ease, transform 0.2s ease; }
+        .object-details__close:hover { background: #e3e6ed; transform: scale(1.05); }
+        body.object-details-open { overflow: hidden; }
+        @keyframes objectDetailsIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .object-card { display: flex; flex-direction: column; gap: 18px; }
+        .object-card__header { display: flex; justify-content: flex-start; align-items: flex-start; gap: 18px; position: relative; padding-right: 80px; }
+        .object-card__title { display: flex; align-items: center; gap: 14px; }
+        .object-card__emoji { font-size: 30px; }
+        .object-card__name { font-size: 1.25rem; font-weight: 700; color: #2c3e50; margin-bottom: 2px; }
+        .object-card__meta { font-size: 0.85rem; color: #7f8c8d; }
+        .object-card__badge { padding: 6px 14px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; position: absolute; top: -2px; right: 70px; margin: 0; }
+        .object-card__badge--new { background: #fdecea; color: #c0392b; }
+        .object-card__badge--active { background: #e8f4fd; color: #1f6fb2; }
+        .object-card__badge--completed { background: #e7f9ef; color: #1e8449; }
+        .object-card__info { display: grid; gap: 12px; background: #f7f9fb; padding: 16px 18px; border-radius: 16px; }
+        .object-card__row { display: flex; flex-direction: column; gap: 4px; }
+        .object-card__label { font-size: 0.75rem; text-transform: uppercase; color: #95a5a6; letter-spacing: 0.05em; }
+        .object-card__value { font-size: 0.95rem; color: #2c3e50; font-weight: 600; line-height: 1.4; }
+        .object-card__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+        .object-card__actions--primary .object-card__button { flex: 1 1 100%; }
+        .object-card__button { flex: 1 1 calc(50% - 10px); display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 14px; border-radius: 12px; border: none; background: #f0f3f6; color: #2c3e50; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; text-decoration: none; }
+        .object-card__button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(44, 62, 80, 0.15); }
+        .object-card__button--primary { background: linear-gradient(135deg, #3498db, #2980b9); color: #ffffff; }
+        .object-card__button--primary:hover { background: linear-gradient(135deg, #2f86c9, #2474a7); }
+        .object-card__button--accent { background: linear-gradient(135deg, #f39c12, #e67e22); color: #ffffff; }
+        .object-card__button--accent:hover { background: linear-gradient(135deg, #e38c0a, #d66d19); }
+        .object-card__button--warning { background: #ffe08a; color: #8a6d1f; }
+        .object-card__button--warning:hover { background: #ffd24d; }
+        .object-card__button--danger { background: #fde1e1; color: #c0392b; }
+        .object-card__button--danger:hover { background: #f8c9c9; }
+        .object-card__button--plain { background: #ffffff; color: #2c3e50; border: 1px solid #dfe6e9; }
+        .object-card__notice { padding: 12px 15px; border-radius: 14px; font-size: 0.85rem; line-height: 1.4; }
+        .object-card__notice--warning { background: #fff4e5; color: #c27c0e; }
+        .object-card__notice--info { background: #e9f2ff; color: #2465c5; }
+        .object-card__notice--muted { background: #f4f6f7; color: #7f8c8d; text-align: center; }
+        .object-card__link { margin-top: 6px; background: none; border: none; color: #1f6fb2; font-size: 0.85rem; cursor: pointer; text-decoration: underline; }
+        .object-card__section--reassign { display: flex; flex-direction: column; gap: 8px; }
+        .object-card__select { width: 100%; border-radius: 12px; border: 1px solid #dfe6e9; padding: 12px; font-size: 0.9rem; background: #ffffff; color: #2c3e50; }
+        .object-card__select--primary { background: linear-gradient(135deg, #3498db, #2980b9); color: #ffffff; border: none; }
+        .object-card__select--primary option { color: #2c3e50; background: #ffffff; }
+
+        @media (max-width: 768px) {
+            .object-details { align-items: center; justify-content: center; }
+            .object-details__card { width: 95vw; height: 80vh; border-radius: 18px; padding: 18px 18px 24px; }
+            .object-card__actions .object-card__button { flex: 1 1 100%; }
+        }
+        @media (max-width: 480px) {
+            .object-details__card { padding: 24px 18px 28px; }
+            .object-details__close { top: 14px; right: 14px; }
         }
     </style>
 </head>
