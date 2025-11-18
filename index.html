@@ -895,7 +895,7 @@
 
     <script type="text/javascript">
         // 🔥 КОНФИГУРАЦИЯ
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxvGJX-Ui9ux1W89B8fQs6TJsf58vc_I5AuTx9dxpqTsyQSX6Aq99RNmHIdNet_SNlH/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyGNTTc4hz4cyH5HWL1ALEHvJXlQk2ZzyUjpCzcd6e0hs7D5tFfajC15oDxywciXy6E/exec';
         
         // 🔥 КЛЮЧИ ДЛЯ LOCALSTORAGE
 const SESSION_KEY = 'map_session';
@@ -1591,7 +1591,24 @@ function processServerData(data) {
     // 🔥 ВОЗВРАЩАЕМ ОРИГИНАЛЬНЫЕ ID (без преобразования в строки!)
     objectsData = data.points;
     
-    window.INSPECTORS_CONFIG = data.inspectorsConfig || {};
+    // 🔥 СОХРАНЯЕМ ЛОКАЛЬНЫЕ ИЗМЕНЕНИЯ, КОТОРЫЕ БЫЛИ СДЕЛАНЫ НЕДАВНО (в течение последних 10 секунд)
+    const recentChanges = window.RECENT_INSPECTOR_CHANGES || {};
+    const now = Date.now();
+    const serverConfig = data.inspectorsConfig || {};
+    const mergedConfig = { ...serverConfig };
+    
+    // Объединяем с недавними локальными изменениями
+    Object.keys(recentChanges).forEach(inspector => {
+        const change = recentChanges[inspector];
+        if (now - change.timestamp < 10000) { // 10 секунд
+            mergedConfig[inspector] = {
+                ...(mergedConfig[inspector] || {}),
+                ...change.config
+            };
+        }
+    });
+    
+    window.INSPECTORS_CONFIG = mergedConfig;
     try { localStorage.removeItem(INSPECTORS_CACHE_KEY); localStorage.removeItem(INSPECTORS_CACHE_TIMESTAMP); } catch(_) {}
     window.INSPECTOR_HOMES = data.inspectorsHomes || {};
     availableIcons = data.availableIcons || {};
@@ -1983,7 +2000,7 @@ function updateListCounters() {
                     },
                     options: {
                         preset: markerType,
-                        iconColor: style.status === 'active' ? style.color : '#808080',
+                        iconColor: style.color,
                         iconSize: [30, 30]
                     }
                 };
@@ -2166,7 +2183,7 @@ function updateSinglePointOnMap(objectId, newStatus) {
             },
             options: {
                 preset: markerType,
-                iconColor: style.status === 'active' ? style.color : '#808080',
+                iconColor: style.color,
                 iconSize: [30, 30]
             }
         };
@@ -2972,7 +2989,7 @@ function reassignInspector(objectId, newInspector) {
                         },
                         options: {
                             preset: 'islands#blueHomeIcon',
-                            iconColor: style.status === 'active' ? style.color : '#808080'
+                            iconColor: style.color
                         }
                     };
                 });
@@ -3157,24 +3174,53 @@ function reassignInspector(objectId, newInspector) {
         }
 
         function applyInspectorChanges(inspector) {
-            const style = getInspectorStyle(inspector);
+            // 🔥 ПОЛУЧАЕМ ЗНАЧЕНИЯ НАПРЯМУЮ ИЗ ФОРМЫ, А НЕ ИЗ КОНФИГУРАЦИИ
+            const statusSelect = document.getElementById(`status_${inspector}`);
+            const iconSelect = document.getElementById(`icon_${inspector}`);
+            
+            // Получаем текущий выбранный цвет из window.INSPECTORS_CONFIG (обновляется через updateInspectorConfig)
+            const currentConfig = window.INSPECTORS_CONFIG && window.INSPECTORS_CONFIG[inspector] 
+                ? window.INSPECTORS_CONFIG[inspector] 
+                : {};
+            const currentStyle = getInspectorStyle(inspector);
+            
+            // 🔥 ПРИОРИТЕТ: текущая конфигурация > стиль по умолчанию
             const config = {
-                color: style.color,
-                icon: style.icon,
-                status: style.status
+                color: currentConfig.color || currentStyle.color,
+                icon: iconSelect && iconSelect.value ? iconSelect.value : (currentConfig.icon || currentStyle.icon),
+                status: statusSelect && statusSelect.value ? statusSelect.value : (currentConfig.status || currentStyle.status)
             };
             
             console.log(`💾 Применение изменений для ${inspector}:`, config);
+            console.log(`🔍 Текущая конфигурация:`, currentConfig);
+            console.log(`🔍 Выбранный цвет из формы:`, currentConfig.color);
             
             // 🔥 ЕСЛИ СТАТУС ИЗМЕНИЛСЯ НА НЕАКТИВНЫЙ - ПЕРЕДАЕМ ОБЪЕКТЫ ADMIN
-            const statusSelect = document.getElementById(`status_${inspector}`);
             if (statusSelect && statusSelect.value !== 'active') {
                 if (confirm(`Перевести инспектора ${inspector} в статус "${getStatusText(statusSelect.value)}"? Все его объекты будут переданы Императору.`)) {
                     saveInspectorConfig(inspector, config, true);
                 }
             } else {
+                // 🔥 МГНОВЕННОЕ ПРИМЕНЕНИЕ НА КЛИЕНТЕ
+                // Обновляем window.INSPECTORS_CONFIG сразу
+                if (!window.INSPECTORS_CONFIG) window.INSPECTORS_CONFIG = {};
+                window.INSPECTORS_CONFIG[inspector] = {
+                    ...(window.INSPECTORS_CONFIG[inspector] || {}),
+                    color: config.color,
+                    icon: config.icon,
+                    status: config.status
+                };
+                
+                // 🔥 СОХРАНЯЕМ ИЗМЕНЕНИЯ КАК НЕДАВНИЕ
+                if (!window.RECENT_INSPECTOR_CHANGES) window.RECENT_INSPECTOR_CHANGES = {};
+                window.RECENT_INSPECTOR_CHANGES[inspector] = {
+                    config: { color: config.color, icon: config.icon, status: config.status },
+                    timestamp: Date.now()
+                };
+                
+                updateInspectorInFilters(inspector, config);
+                updateMap();
                 saveInspectorConfig(inspector, config, true);
-                upsertInspectorCache(inspector, config);
             }
         }
 
@@ -3198,7 +3244,29 @@ function reassignInspector(objectId, newInspector) {
                 
                 if (result.success) {
                     console.log(`✅ Конфигурация сохранена для ${inspector}`);
-                    upsertInspectorCache(inspector, config);
+                    
+                    // 🔥 ОБНОВЛЯЕМ window.INSPECTORS_CONFIG НЕМЕДЛЕННО
+                    if (!window.INSPECTORS_CONFIG) window.INSPECTORS_CONFIG = {};
+                    window.INSPECTORS_CONFIG[inspector] = {
+                        ...(window.INSPECTORS_CONFIG[inspector] || {}),
+                        color: config.color,
+                        icon: config.icon,
+                        status: config.status
+                    };
+                    
+                    // 🔥 СОХРАНЯЕМ ИЗМЕНЕНИЯ КАК НЕДАВНИЕ, ЧТОБЫ НЕ ПЕРЕЗАПИСЫВАТЬ ИХ ПРИ ЗАГРУЗКЕ ДАННЫХ
+                    if (!window.RECENT_INSPECTOR_CHANGES) window.RECENT_INSPECTOR_CHANGES = {};
+                    window.RECENT_INSPECTOR_CHANGES[inspector] = {
+                        config: { color: config.color, icon: config.icon, status: config.status },
+                        timestamp: Date.now()
+                    };
+                    
+                    // 🔥 УДАЛЯЕМ ЛОКАЛЬНЫЙ КЭШ, ЧТОБЫ ПРИОРИТЕТ БЫЛ У ДАННЫХ СЕРВЕРА
+                    try {
+                        const cache = loadInspectorsCache();
+                        delete cache[inspector];
+                        saveInspectorsCache(cache);
+                    } catch(_) {}
                     
                     if (applyChanges) {
                         // 🔥 НЕМЕДЛЕННОЕ ПРИМЕНЕНИЕ ИЗМЕНЕНИЙ К ВСЕМУ
@@ -3230,7 +3298,8 @@ function reassignInspector(objectId, newInspector) {
                             : `✅ Настройки для ${inspector} применены`,
                         'success'
                     );
-                    setTimeout(() => loadData(), 500);
+                    // 🔥 ЗАГРУЖАЕМ ДАННЫЕ С СЕРВЕРА, ЧТОБЫ ВСЕ УВИДЕЛИ ИЗМЕНЕНИЯ
+                    setTimeout(() => loadData(), 1000);
                     
                     // 🔥 ЗАКРЫВАЕМ МЕНЮ ПОСЛЕ ПРИМЕНЕНИЯ
                     setTimeout(() => {
@@ -3242,7 +3311,8 @@ function reassignInspector(objectId, newInspector) {
                 }
             };
             
-            const url = `${SCRIPT_URL}?action=saveInspectorConfig&inspector=${encodeURIComponent(inspector)}&config=${encodeURIComponent(JSON.stringify(config))}&callback=${callbackName}`;
+            // 🔥 ПЕРЕДАЕМ ОТДЕЛЬНЫЕ ПАРАМЕТРЫ ВМЕСТО ОБЪЕКТА CONFIG
+            const url = `${SCRIPT_URL}?action=saveInspectorConfig&inspector=${encodeURIComponent(inspector)}&color=${encodeURIComponent(config.color || '')}&icon=${encodeURIComponent(config.icon || '')}&status=${encodeURIComponent(config.status || 'active')}&callback=${callbackName}`;
             const script = document.createElement('script');
             script.src = url;
             
