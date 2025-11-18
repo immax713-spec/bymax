@@ -1042,7 +1042,7 @@ function resetFiltersToDefault() {
     inspectorCheckboxes.forEach(checkbox => {
         const inspector = checkbox.id.replace('insp_', '');
         const style = getInspectorStyle(inspector);
-        checkbox.checked = style.status === 'active'; // только активных
+        checkbox.checked = (style.status === 'active') && (inspector !== 'Admin');
     });
     
     // 🔥 ВЫБИРАЕМ ВСЕ СПИСКИ
@@ -1379,7 +1379,6 @@ function resetFiltersToDefault() {
                 document.getElementById('mobileToggleBtn').style.display = 'none';
             }
 
-            startAutoRefresh();
         }
 
         function login() {
@@ -1752,7 +1751,7 @@ function processServerData(data) {
         listsList.appendChild(checkbox);
     });
 
-     setTimeout(() => {
+        setTimeout(() => {
         updateInspectorCounters();
         
         // 🔥 ЗАГРУЗКА СОХРАНЕННЫХ ФИЛЬТРОВ ИЛИ УСТАНОВКА ПО УМОЛЧАНИЮ
@@ -1761,7 +1760,6 @@ function processServerData(data) {
         }
         
         updateFilters();
-        try { loadFiltersFromServerAndApply(); } catch(_) {}
     }, 100);
         }
 
@@ -3612,7 +3610,6 @@ document.addEventListener('visibilitychange', function() {
     if (!document.hidden && currentUser) {
         saveSession();
         try { loadData(); } catch(_) {}
-        try { loadFiltersFromServerAndApply(); } catch(_) {}
     }
 });
 
