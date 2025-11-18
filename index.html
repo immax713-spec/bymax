@@ -696,6 +696,12 @@
             .object-details { align-items: center; justify-content: center; }
             .object-details__card { width: 95vw; height: 80vh; border-radius: 18px; padding: 18px 18px 24px; }
             .object-card__actions .object-card__button { flex: 1 1 100%; }
+            .object-card__header { flex-direction: column; align-items: stretch; gap: 6px; padding-right: 0; }
+            .object-card__title { display: flex; align-items: center; gap: 8px; }
+            .object-card__title > div { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: auto; }
+            .object-card__name { display: block; }
+            .object-card__meta { display: block; margin-left: 0; }
+            .object-card__badge { position: static; align-self: flex-end; white-space: nowrap; }
         }
         @media (max-width: 480px) {
             .object-details__card { padding: 24px 18px 28px; }
