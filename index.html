@@ -1750,6 +1750,9 @@ function processServerData(data) {
                 if (typeof iconValue === 'string' && availableIcons && availableIcons[iconValue]) {
                     iconValue = availableIcons[iconValue];
                 }
+                if (typeof iconValue !== 'string' || /^[\d\.-]+$/.test(iconValue) || iconValue.length > 5) {
+                    iconValue = '👨‍💼';
+                }
                 const fallback = getDeterministicFallbackStyle(inspector);
                 return {
                     color: config.color || fallback.color,
