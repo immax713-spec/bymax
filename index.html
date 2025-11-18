@@ -895,7 +895,7 @@
 
     <script type="text/javascript">
         // 🔥 КОНФИГУРАЦИЯ
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyGNTTc4hz4cyH5HWL1ALEHvJXlQk2ZzyUjpCzcd6e0hs7D5tFfajC15oDxywciXy6E/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_h3aeswCtzh1q3hxNN7n5NFTY1vRiheVM2vQ3qAiFUwxlnaVnWQntDUfCJU56dJtH/exec';
         
         // 🔥 КЛЮЧИ ДЛЯ LOCALSTORAGE
 const SESSION_KEY = 'map_session';
@@ -1572,7 +1572,10 @@ function resetFiltersToDefault() {
                 }
             };
             
-            const url = SCRIPT_URL + '?action=getData&callback=' + callbackName;
+            // 🔥 ДОБАВЛЯЕМ TIMESTAMP ДЛЯ ОБХОДА КЭША БРАУЗЕРА
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(7);
+            const url = SCRIPT_URL + '?action=getData&callback=' + callbackName + '&_=' + timestamp + '&r=' + random;
             
             console.log('🟡 Запрос к URL:', url);
             const script = document.createElement('script');
@@ -1600,11 +1603,22 @@ function processServerData(data) {
     // Объединяем с недавними локальными изменениями
     Object.keys(recentChanges).forEach(inspector => {
         const change = recentChanges[inspector];
-        if (now - change.timestamp < 10000) { // 10 секунд
+        if (now - change.timestamp < 30000) { // 30 секунд (увеличено для надежности)
+            console.log(`🔄 Применяем недавние изменения для ${inspector}:`, change.config);
             mergedConfig[inspector] = {
                 ...(mergedConfig[inspector] || {}),
                 ...change.config
             };
+        }
+    });
+    
+    console.log('📊 Загруженная конфигурация инспекторов:', Object.keys(mergedConfig).length, 'инспекторов');
+    
+    // 🔥 ЛОГИРУЕМ КОНФИГУРАЦИЮ ДЛЯ ОТЛАДКИ
+    Object.keys(mergedConfig).forEach(insp => {
+        const cfg = mergedConfig[insp];
+        if (cfg && cfg.color) {
+            console.log(`  - ${insp}: цвет=${cfg.color}, иконка=${cfg.icon}, статус=${cfg.status}`);
         }
     });
     
@@ -1763,22 +1777,27 @@ function processServerData(data) {
             
             const config = window.INSPECTORS_CONFIG ? window.INSPECTORS_CONFIG[inspector] : null;
             if (config) {
-                let iconValue = config.icon || '👨‍💼';
-                if (typeof iconValue === 'string' && availableIcons && availableIcons[iconValue]) {
+                // 🔥 ИСПОЛЬЗУЕМ ТОЛЬКО СОХРАНЕННЫЕ ЗНАЧЕНИЯ, БЕЗ FALLBACK!
+                let iconValue = config.icon;
+                if (iconValue && typeof iconValue === 'string' && availableIcons && availableIcons[iconValue]) {
                     iconValue = availableIcons[iconValue];
                 }
-                if (typeof iconValue !== 'string' || /^[\d\.-]+$/.test(iconValue) || iconValue.length > 5) {
-                    iconValue = '👨‍💼';
+                if (!iconValue || typeof iconValue !== 'string' || /^[\d\.-]+$/.test(iconValue) || iconValue.length > 5) {
+                    iconValue = '👨‍💼'; // Только если иконка действительно невалидная
                 }
+                
+                // 🔥 ВАЖНО: используем сохраненный цвет, даже если он пустой (но не должен быть)
+                // Fallback только если цвет вообще не задан в конфигурации
                 const fallback = getDeterministicFallbackStyle(inspector);
                 return {
-                    color: config.color || fallback.color,
-                    icon: iconValue || fallback.icon,
+                    color: (config.color && config.color.trim()) ? config.color : fallback.color,
+                    icon: iconValue,
                     status: config.status || 'active',
                     accessRights: config.accessRights || 'Инспектор'
                 };
             }
             
+            // Только если конфигурации вообще нет - используем fallback
             return getDeterministicFallbackStyle(inspector);
         }
 
@@ -3244,20 +3263,26 @@ function reassignInspector(objectId, newInspector) {
                 
                 if (result.success) {
                     console.log(`✅ Конфигурация сохранена для ${inspector}`);
+                    console.log(`💾 Сохраненные данные с сервера:`, result.saved || 'не указано');
+                    
+                    // 🔥 ИСПОЛЬЗУЕМ ДАННЫЕ С СЕРВЕРА, ЕСЛИ ОНИ ЕСТЬ (подтверждение сохранения)
+                    const savedConfig = result.saved || config;
                     
                     // 🔥 ОБНОВЛЯЕМ window.INSPECTORS_CONFIG НЕМЕДЛЕННО
                     if (!window.INSPECTORS_CONFIG) window.INSPECTORS_CONFIG = {};
                     window.INSPECTORS_CONFIG[inspector] = {
                         ...(window.INSPECTORS_CONFIG[inspector] || {}),
-                        color: config.color,
-                        icon: config.icon,
-                        status: config.status
+                        color: savedConfig.color || config.color,
+                        icon: savedConfig.icon || config.icon,
+                        status: savedConfig.status || config.status
                     };
+                    
+                    console.log(`🔄 Обновленная конфигурация для ${inspector}:`, window.INSPECTORS_CONFIG[inspector]);
                     
                     // 🔥 СОХРАНЯЕМ ИЗМЕНЕНИЯ КАК НЕДАВНИЕ, ЧТОБЫ НЕ ПЕРЕЗАПИСЫВАТЬ ИХ ПРИ ЗАГРУЗКЕ ДАННЫХ
                     if (!window.RECENT_INSPECTOR_CHANGES) window.RECENT_INSPECTOR_CHANGES = {};
                     window.RECENT_INSPECTOR_CHANGES[inspector] = {
-                        config: { color: config.color, icon: config.icon, status: config.status },
+                        config: { color: savedConfig.color || config.color, icon: savedConfig.icon || config.icon, status: savedConfig.status || config.status },
                         timestamp: Date.now()
                     };
                     
@@ -3299,7 +3324,11 @@ function reassignInspector(objectId, newInspector) {
                         'success'
                     );
                     // 🔥 ЗАГРУЖАЕМ ДАННЫЕ С СЕРВЕРА, ЧТОБЫ ВСЕ УВИДЕЛИ ИЗМЕНЕНИЯ
-                    setTimeout(() => loadData(), 1000);
+                    // Увеличиваем задержку, чтобы дать время Google Sheets обновиться
+                    setTimeout(() => {
+                        console.log('🔄 Принудительная перезагрузка данных после сохранения конфигурации');
+                        loadData();
+                    }, 2000);
                     
                     // 🔥 ЗАКРЫВАЕМ МЕНЮ ПОСЛЕ ПРИМЕНЕНИЯ
                     setTimeout(() => {
