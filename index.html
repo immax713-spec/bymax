@@ -1750,20 +1750,26 @@ function processServerData(data) {
                 if (typeof iconValue === 'string' && availableIcons && availableIcons[iconValue]) {
                     iconValue = availableIcons[iconValue];
                 }
+                const fallback = getDeterministicFallbackStyle(inspector);
                 return {
-                    color: config.color || '#808080',
-                    icon: iconValue,
+                    color: config.color || fallback.color,
+                    icon: iconValue || fallback.icon,
                     status: config.status || 'active',
                     accessRights: config.accessRights || 'Инспектор'
                 };
             }
             
-            return { 
-                color: '#808080', 
-                icon: '👨‍💼', 
-                status: 'active', 
-                accessRights: 'Инспектор'
-            };
+            return getDeterministicFallbackStyle(inspector);
+        }
+
+        function getDeterministicFallbackStyle(inspector) {
+            const name = String(inspector || '').trim();
+            const colors = Array.isArray(availableColors) && availableColors.length ? availableColors : ['#3498db','#e74c3c','#2ecc71','#f1c40f','#9b59b6','#1abc9c','#34495e','#e67e22'];
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) { hash = ((hash << 5) - hash) + name.charCodeAt(i); hash |= 0; }
+            const idx = Math.abs(hash) % colors.length;
+            const color = colors[idx];
+            return { color, icon: '👨‍💼', status: 'active', accessRights: 'Инспектор' };
         }
 
         function calculateInspectorStats(selectedLists = null) {
@@ -3206,12 +3212,7 @@ function reassignInspector(objectId, newInspector) {
                             });
                         }
 
-                        // 🔥 АВТОМАТИЧЕСКИЙ СБРОС И ПРИМЕНЕНИЕ ФИЛЬТРОВ ДЛЯ ОБНОВЛЕНИЯ ЦВЕТОВ
-                        deselectAllLists();
-                        setTimeout(() => {
-                            selectAllLists();
-                            updateMap();
-                        }, 100);
+                        updateMap();
                         
                         // 🔥 ОБНОВЛЯЕМ ДОМАШНИЕ ТОЧКИ
                         if (showInspectorsHomes) {
