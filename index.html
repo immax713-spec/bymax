@@ -901,7 +901,7 @@
 
     <script type="text/javascript">
         // 🔥 КОНФИГУРАЦИЯ
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_h3aeswCtzh1q3hxNN7n5NFTY1vRiheVM2vQ3qAiFUwxlnaVnWQntDUfCJU56dJtH/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjvIy1yIqB3tTELvyH18Uv7hOVkNTLhCDteRjcz3xuD6dk2BRv_9Vb2LYFGDf5ZI6h/exec';
         
         // 🔥 КЛЮЧИ ДЛЯ LOCALSTORAGE
 const SESSION_KEY = 'map_session';
@@ -1149,10 +1149,6 @@ function resetFiltersToDefault() {
                         currentUser = session.user;
                         userAccessRights = session.role;
                         
-                        // Восстанавливаем статус рабочего дня ОТДЕЛЬНО от сессии
-                        const workDayStatus = getWorkDayStatus();
-                        isWorkDayOpen = workDayStatus.isOpen;
-                        
                         showMainInterface();
                         loadData();
                         return true;
@@ -1246,8 +1242,12 @@ function resetFiltersToDefault() {
         function saveWorkDayStatus(isOpen, startTime = null) {
             try {
                 localStorage.setItem(WORK_DAY_STATUS_KEY, isOpen ? 'open' : 'closed');
-                if (startTime) {
-                    localStorage.setItem(WORK_DAY_START_TIME_KEY, startTime);
+                if (isOpen) {
+                    if (startTime) {
+                        localStorage.setItem(WORK_DAY_START_TIME_KEY, startTime);
+                    }
+                } else {
+                    localStorage.removeItem(WORK_DAY_START_TIME_KEY);
                 }
                 console.log('✅ Статус рабочего дня сохранен:', isOpen ? 'открыт' : 'закрыт');
             } catch (error) {
@@ -2730,12 +2730,7 @@ function reassignInspector(objectId, newInspector) {
         function checkWorkDayStatus() {
             if (userAccessRights === 'Император' || userAccessRights === 'Администратор') return;
             
-            const localStatus = getWorkDayStatus();
-            if (localStatus.isOpen) {
-                console.log('🔄 Локально: рабочий день открыт — сверяем с сервером');
-                isWorkDayOpen = true;
-                updateWorkDayButtons();
-            }
+            
             
             const callbackName = 'checkWorkDayCallback_' + Date.now();
             
