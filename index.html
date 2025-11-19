@@ -901,7 +901,7 @@
 
     <script type="text/javascript">
         // 🔥 КОНФИГУРАЦИЯ
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjvIy1yIqB3tTELvyH18Uv7hOVkNTLhCDteRjcz3xuD6dk2BRv_9Vb2LYFGDf5ZI6h/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-pv59WIxnJrb8qNusIHUj2NbT_86RnBFGRFvT47zSQV7bS3d-brGqAIDaRIw8xIJy/exec';
         
         // 🔥 КЛЮЧИ ДЛЯ LOCALSTORAGE
 const SESSION_KEY = 'map_session';
@@ -959,6 +959,7 @@ let objectsData = [];
 let map, objectManager, activeObjectsLayer, inspectorsHomesLayer;
 let showInspectorsHomes = false;
 let isWorkDayOpen = false;
+let workDayStartTimeServer = null;
 let availableIcons = {};
 let availableColors = [];
  
@@ -2746,13 +2747,12 @@ function reassignInspector(objectId, newInspector) {
                 cleanupCallback();
                 if (result.success) {
                     isWorkDayOpen = !!result.open;
-                    
+                    workDayStartTimeServer = result.openTime || null;
                     if (isWorkDayOpen) {
-                        saveWorkDayStatus(true);
+                        saveWorkDayStatus(true, workDayStartTimeServer);
                     } else {
                         saveWorkDayStatus(false);
                     }
-                    
                     updateWorkDayButtons();
                     showNotification(isWorkDayOpen ? '🟢 Рабочий день открыт' : '🔴 Рабочий день закрыт', 'success');
                 }
@@ -2783,8 +2783,9 @@ function reassignInspector(objectId, newInspector) {
         const localStatus = getWorkDayStatus();
         let statusText = 'Статус: День открыт';
         
-        if (localStatus.startTime) {
-            const startDate = new Date(localStatus.startTime);
+        const startSrc = workDayStartTimeServer || localStatus.startTime;
+        if (startSrc) {
+            const startDate = new Date(startSrc);
             const timeString = startDate.toLocaleTimeString('ru-RU', { 
                 hour: '2-digit', 
                 minute: '2-digit' 
@@ -2843,9 +2844,8 @@ function reassignInspector(objectId, newInspector) {
                         cleanupCallback();
                         if (result.success) {
                             isWorkDayOpen = true;
-                            
-                            saveWorkDayStatus(true, startTime);
-                            
+                            workDayStartTimeServer = result.openTime || startTime;
+                            saveWorkDayStatus(true, workDayStartTimeServer);
                             updateWorkDayButtons();
                             showNotification(`✅ Рабочий день открыт!`, 'success');
                         } else {
@@ -2913,9 +2913,8 @@ function reassignInspector(objectId, newInspector) {
                         cleanupCallback();
                         if (result.success) {
                             isWorkDayOpen = false;
-                            
+                            workDayStartTimeServer = null;
                             saveWorkDayStatus(false);
-                            
                             updateWorkDayButtons();
                             showNotification(`✅ Рабочий день закрыт!`, 'success');
                         } else {
