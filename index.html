@@ -643,6 +643,7 @@
                 max-width: 220px;
                 padding: 6px;
             }
+            .object-card { max-height: calc(100vh - 100px); padding-bottom: 16px; }
         }
         .object-details { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 1500; }
         .object-details--visible { display: flex; }
@@ -655,7 +656,7 @@
         body.object-details-open { overflow: hidden; }
         @keyframes objectDetailsIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .object-card { display: flex; flex-direction: column; gap: 18px; }
+        .object-card { display: flex; flex-direction: column; gap: 18px; max-height: calc(100vh - 120px); overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 12px; }
         .object-card__header { display: flex; justify-content: flex-start; align-items: flex-start; gap: 18px; position: relative; padding-right: 80px; }
         .object-card__title { display: flex; align-items: center; gap: 14px; }
         .object-card__emoji { font-size: 30px; }
@@ -691,6 +692,7 @@
         .object-card__select { width: 100%; border-radius: 12px; border: 1px solid #dfe6e9; padding: 12px; font-size: 0.9rem; background: #ffffff; color: #2c3e50; }
         .object-card__select--primary { background: linear-gradient(135deg, #3498db, #2980b9); color: #ffffff; border: none; }
         .object-card__select--primary option { color: #2c3e50; background: #ffffff; }
+        .object-card__spacer { height: 56px; flex: 0 0 auto; }
 
         @media (max-width: 768px) {
             .object-details { align-items: center; justify-content: center; }
@@ -706,6 +708,7 @@
         @media (max-width: 480px) {
             .object-details__card { padding: 24px 18px 28px; }
             .object-details__close { top: 14px; right: 14px; }
+            .object-card__spacer { height: 96px; }
         }
     </style>
 </head>
@@ -2270,7 +2273,7 @@ function updateSinglePointOnMap(objectId, newStatus) {
                         }
                     }
                 } else if (isActive && canMarkEntryExit) {
-                    entrySection = `<div class="object-card__actions"><button class="object-card__button object-card__button--primary" onclick="markExit(${obj.id})">🚪 Выход</button></div>`;
+                    entrySection = `<div class="object-card__actions"><button class="object-card__button object-card__button--danger" onclick="markExit(${obj.id})">🚪 Выход</button></div>`;
                     if (userAccessRights === 'Император' || userAccessRights === 'Администратор') {
                         entrySection += `<div class="object-card__actions"><button class="object-card__button object-card__button--danger" onclick="cancelEntry(${obj.id})">Отменить вход</button></div>`;
                     }
@@ -2331,6 +2334,7 @@ function updateSinglePointOnMap(objectId, newStatus) {
                     ${entrySection}
                     ${notices}
                     ${reassignSelect}
+                    <div class="object-card__spacer"></div>
                 </div>
             `;
         }
