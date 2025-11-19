@@ -651,12 +651,16 @@
         .object-details__backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45); }
         .object-details__card { position: relative; background: #ffffff; border-radius: 22px; width: min(560px, 96vw); max-height: 90vh; overflow: hidden; padding: 30px 32px 34px; box-shadow: 0 28px 60px rgba(0, 0, 0, 0.25); z-index: 1; animation: objectDetailsIn 0.25s ease; }
         .object-details__content { max-height: calc(90vh - 90px); overflow-y: auto; margin-top: 12px; padding-right: 24px; scrollbar-gutter: stable; position: relative; }
+        .object-details__content { -ms-overflow-style: none; scrollbar-width: none; }
+        .object-details__content::-webkit-scrollbar { width: 0; height: 0; }
         .object-details__close { position: absolute; top: 18px; right: 18px; width: 36px; height: 36px; border-radius: 50%; border: none; background: #f2f4f8; color: #2c3e50; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s ease, transform 0.2s ease; }
         .object-details__close:hover { background: #e3e6ed; transform: scale(1.05); }
         body.object-details-open { overflow: hidden; }
         @keyframes objectDetailsIn { from { opacity: 0; } to { opacity: 1; } }
 
         .object-card { display: flex; flex-direction: column; gap: 18px; max-height: calc(100vh - 120px); overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 12px; }
+        .object-card { -ms-overflow-style: none; scrollbar-width: none; }
+        .object-card::-webkit-scrollbar { width: 0; height: 0; }
         .object-card__header { display: flex; justify-content: flex-start; align-items: flex-start; gap: 18px; position: relative; padding-right: 80px; }
         .object-card__title { display: flex; align-items: center; gap: 14px; }
         .object-card__emoji { font-size: 30px; }
