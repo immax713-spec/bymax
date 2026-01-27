@@ -3937,10 +3937,8 @@
                 gridSize: 64
             });
 
-            inspectorsHomesLayer = new ymaps.ObjectManager({
-                clusterize: false,
-                gridSize: 64
-            });
+            // 🔥 Используем GeoObjectCollection вместо ObjectManager (более надёжно для небольшого количества объектов)
+            inspectorsHomesLayer = new ymaps.GeoObjectCollection();
 
             // 🔥 УСТАНАВЛИВАЕМ НАСТРОЙКИ БАЛЛУНОВ
             objectManager.objects.options.set({
@@ -6689,20 +6687,20 @@
                     return;
                 }
 
-                const homeFeatures = keys.map(inspector => {
+                // 🔥 Создаём Placemark для каждого дома (GeoObjectCollection работает с Placemark)
+                let addedCount = 0;
+                keys.forEach(inspector => {
                     const home = homes[inspector];
-                    if (!home || !home.lat || !home.lon) return null;
+                    if (!home || !home.lat || !home.lon) {
+                        console.warn('⚠️ Пропущен:', inspector);
+                        return;
+                    }
 
                     const style = getInspectorStyle(inspector);
 
-                    return {
-                        type: 'Feature',
-                        id: 'home_' + inspector.replace(/[^a-zA-Z0-9]/g, '_'),
-                        geometry: {
-                            type: 'Point',
-                            coordinates: [parseFloat(home.lat), parseFloat(home.lon)]
-                        },
-                        properties: {
+                    const placemark = new ymaps.Placemark(
+                        [parseFloat(home.lat), parseFloat(home.lon)],
+                        {
                             hintContent: `🏠 ${inspector}`,
                             balloonContent: `
                                 <div style="padding: 10px; min-width: 250px;">
@@ -6713,19 +6711,17 @@
                                 </div>
                             `
                         },
-                        options: {
+                        {
                             preset: 'islands#blueHomeIcon',
                             iconColor: style.color || '#3498db'
                         }
-                    };
-                }).filter(f => f !== null);
+                    );
 
-                if (homeFeatures.length > 0) {
-                    inspectorsHomesLayer.add({
-                        type: 'FeatureCollection',
-                        features: homeFeatures
-                    });
-                }
+                    inspectorsHomesLayer.add(placemark);
+                    addedCount++;
+                });
+
+                console.log('✅ Добавлено домов на карту:', addedCount);
             }
         };
 
