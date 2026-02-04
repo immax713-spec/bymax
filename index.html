@@ -26,6 +26,7 @@
             height: 100vh;
             overflow: hidden;
             background: #f0f2f5;
+            /* 🔥 ВАЖНО ДЛЯ СВАЙПОВ НА МОБИЛЬНЫХ */
             touch-action: pan-y;
             overscroll-behavior: none;
         }
@@ -342,8 +343,8 @@
 
         .container {
             display: flex;
-            flex-direction: row;
             height: 100vh;
+            flex-direction: row;
         }
 
         /* 🔥 ПЕРЕДЕЛАННЫЙ САЙДБАР */
@@ -415,17 +416,10 @@
         /* 🔥 НОВЫЕ СЕКЦИИ УПРАВЛЕНИЯ В САЙДБАРЕ */
         .control-section {
             background: #f8f9fa;
-            padding: 10px 12px;
+            padding: 12px;
             border-radius: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             border: 1px solid #dee2e6;
-        }
-
-        /* Специальный стиль для админ‑блока под iOS */
-        #adminSection.control-section {
-            background: #f2f2f7;
-            border: none;
-            padding: 10px 8px 12px;
         }
 
         .control-section-title {
@@ -458,41 +452,71 @@
         .admin-btn,
         .inspector-btn,
         .close-day-btn {
-            padding: 10px 12px;
-            border: 1px solid #ddd;
+            padding: 6px 8px;
+            border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: bold;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 10px;
+            text-align: center;
+            color: white;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
             width: 100%;
-            margin-bottom: 6px;
-            background: #f8f9fa;
-            color: #333;
-            box-shadow: none;
-            transition: background 0.2s ease;
+            margin-bottom: 4px;
         }
 
-        .admin-btn:hover,
-        .inspector-btn:hover,
+        /* Ховер-эффекты для всех кнопок */
+        .control-button:hover,
+        .list-control-button:hover,
+        .admin-btn:hover {
+            background: linear-gradient(135deg, #2f86c9, #3498db);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 🔥 ЦВЕТА ДЛЯ РАЗНЫХ ТИПОВ КНОПОК */
+        .admin-btn {
+            background: linear-gradient(135deg, #1f6fb2, #3498db);
+        }
+
+        .admin-btn:hover {
+            background: linear-gradient(135deg, #2f86c9, #3498db);
+        }
+
+        .inspector-btn {
+            background: #90EE90;
+            color: #006400;
+        }
+
+        .inspector-btn:hover {
+            background: #7CFC00;
+            color: #006400;
+        }
+
+        .close-day-btn {
+            background: #FFB6C1;
+            color: #8B0000;
+        }
+
         .close-day-btn:hover {
-            background: #e9ecef;
-            border-color: #ced4da;
-            transform: none;
-            box-shadow: none;
+            background: #FF69B4;
+            color: #8B0000;
         }
 
-        /* 🔥 УБИРАЕМ СПЕЦИФИЧНЫЕ ЦВЕТА, ОСТАВЛЯЕМ ТОЛЬКО ДЛЯ DISABLED */
         .close-day-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            background: #f1f3f5;
-            color: #adb5bd;
-            border-color: #dee2e6;
+            background: #FFB6C1;
+            color: #8B0000;
+        }
+
+        .close-day-btn:disabled:hover {
+            background: #FFB6C1;
+            color: #8B0000;
+            transform: none;
+            box-shadow: none;
         }
 
         /* 🔥 СЕТКА ДЛЯ АДМИНСКИХ КНОПОК */
@@ -501,64 +525,6 @@
             grid-template-columns: 1fr;
             gap: 6px;
             margin-bottom: 8px;
-        }
-
-        /* 🔥 Админ‑меню в стиле iOS (как настройки iPhone) */
-        .admin-settings-ios {
-            margin-top: 4px;
-        }
-
-        .admin-settings-group {
-            background: #ffffff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(0, 0, 0, 0.04);
-        }
-
-        .admin-settings-item {
-            width: 100%;
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #ffffff;
-            border: none;
-            border-bottom: 1px solid #e5e5ea;
-            cursor: pointer;
-            text-align: left;
-            transition: background 0.15s ease;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-                "Segoe UI", sans-serif;
-        }
-
-        .admin-settings-item:last-child {
-            border-bottom: none;
-        }
-
-        .admin-settings-item:hover {
-            background: #f9f9fb;
-        }
-
-        .admin-settings-emoji {
-            font-size: 18px;
-            width: 26px;
-            text-align: center;
-        }
-
-        .admin-settings-text {
-            flex: 1;
-            font-size: 13px;
-            color: #111111;
-        }
-
-        .admin-settings-value {
-            font-size: 12px;
-            color: #8e8e93;
-        }
-
-        .admin-settings-danger {
-            color: #ff3b30;
         }
 
         /* 🔥 КНОПКИ В ФИЛЬТРАХ */
@@ -603,12 +569,12 @@
         }
 
         .checkbox-group {
-            max-height: none;
-            overflow: visible;
-            border: none;
-            padding: 0;
-            border-radius: 0;
-            background: transparent;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 8px;
+            border-radius: 5px;
+            background: white;
         }
 
         .checkbox-item {
@@ -843,27 +809,30 @@
 
         .objects-list {
             flex: 1;
-            overflow: visible;
-            border: none;
-            border-radius: 0;
-            margin-top: 0;
-            background: transparent;
-            box-shadow: none;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 15px;
+            background: white;
         }
 
         .objects-list-title {
-            display: none;
+            background: #34495e;
+            color: white;
+            padding: 8px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+            font-size: 0.9rem;
         }
 
         .object-item {
-            padding: 12px 14px;
-            border-bottom: 1px solid #f1f1f1;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
             cursor: pointer;
             display: flex;
-            align-items: flex-start;
-            gap: 6px;
-            font-size: 0.9rem;
-            background: #fff;
+            align-items: center;
+            font-size: 0.85rem;
         }
 
         .object-item:hover {
@@ -874,55 +843,29 @@
             border-bottom: none;
         }
 
-        .object-title {
-            font-weight: 700;
+        .object-id {
+            font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 2px;
+            margin-right: 6px;
         }
 
-        .object-sub {
-            font-size: 0.82rem;
-            color: #6b7c86;
+        .object-address {
+            flex: 1;
+            font-size: 0.8rem;
+            color: #555;
         }
 
-        .object-inspector { display: none; }
-
-        .objects-section-title {
-            padding: 10px 12px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #2c3e50;
-            background: #f8fafb;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            border-bottom: 1px solid #eef2f4;
+        .object-inspector {
+            font-size: 0.75rem;
+            color: #7f8c8d;
+            margin-top: 2px;
         }
 
-        .status-pill {
-            align-self: center;
+        .object-status {
             margin-left: 8px;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 9999px;
-            border: 1px solid transparent;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-        }
-        .status-pill.new {
-            color: #c0392b;
-            background: rgba(192, 57, 43, 0.12);
-            border-color: rgba(192, 57, 43, 0.25);
-        }
-        .status-pill.active {
-            color: #2980b9;
-            background: rgba(41, 128, 185, 0.12);
-            border-color: rgba(41, 128, 185, 0.25);
-        }
-        .status-pill.completed {
-            color: #27ae60;
-            background: rgba(39, 174, 96, 0.12);
-            border-color: rgba(39, 174, 96, 0.25);
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 8px;
         }
 
         /* 🔥 СТИЛИ БАЛЛУНОВ И КНОПОК */
@@ -1187,41 +1130,6 @@
             align-items: center;
             font-weight: bold;
             font-size: 0.85rem;
-        }
-
-        .accordion-header-control {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Header master checkbox visual (black X on white, same as list items) */
-        .master-checkbox input[type="checkbox"] {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            border: 2px solid #333;
-            border-radius: 3px;
-            background: white;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .master-checkbox input[type="checkbox"]:checked {
-            background: white;
-            border-color: #333;
-        }
-
-        .master-checkbox input[type="checkbox"]:checked::after {
-            content: "✕";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #000;
-            font-size: 14px;
-            font-weight: bold;
         }
 
         .accordion-header:hover {
@@ -1924,10 +1832,9 @@
         }
 
         .object-card__actions {
-            /* Removed old actions style to enforce column layout defined later */
             display: flex;
-            flex-direction: column !important;
-            width: 100%;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         /* 🔥 СВАЙП-ХЛЯСТИК ДЛЯ БАЛУНА */
@@ -2040,241 +1947,57 @@
         }
 
         /* 🔥 НОВЫЙ ДИЗАЙН ПЕРЕКЛЮЧАТЕЛЯ РАБОЧЕГО ДНЯ (BUBBLE SWITCH) */
-        /* 🔥 NEW COMPACT WORKDAY CONTROL */
-        .workday-control-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 10px 14px;
-            margin: 10px 0 15px 0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .workday-control-card:hover {
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            transform: translateY(-1px);
-        }
-
-        .workday-status-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            pointer-events: none;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #ff4757;
-            /* Closed by default */
-            box-shadow: 0 0 8px rgba(255, 71, 87, 0.3);
-            box-shadow: 0 0 8px rgba(255, 71, 87, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        @keyframes pulse-gray {
-            0% {
-                box-shadow: 0 0 0 0 rgba(149, 165, 166, 0.4);
-                transform: scale(1);
-            }
-
-            70% {
-                box-shadow: 0 0 0 6px rgba(149, 165, 166, 0);
-                transform: scale(1.1);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(149, 165, 166, 0);
-                transform: scale(1);
-            }
-        }
-
-        @keyframes pulse-green {
-            0% {
-                box-shadow: 0 0 0 0 rgba(46, 213, 115, 0.4);
-                transform: scale(1);
-            }
-
-            70% {
-                box-shadow: 0 0 0 6px rgba(46, 213, 115, 0);
-                transform: scale(1.1);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(46, 213, 115, 0);
-                transform: scale(1);
-            }
-        }
-
-        @keyframes pulse-red {
-            0% {
-                box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4);
-                transform: scale(1);
-            }
-
-            70% {
-                box-shadow: 0 0 0 6px rgba(255, 71, 87, 0);
-                transform: scale(1.1);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(255, 71, 87, 0);
-                transform: scale(1);
-            }
-        }
-
-        .pulse-gray {
-            animation: pulse-gray 1.5s infinite;
-        }
-
-        .pulse-green {
-            animation: pulse-green 1.5s infinite;
-        }
-
-        .pulse-red {
-            animation: pulse-red 1.5s infinite;
-        }
-
-        .workday-control-card.open .status-dot {
-            background-color: #2ed573;
-            /* Open */
-            box-shadow: 0 0 8px rgba(46, 213, 115, 0.3);
-        }
-
-        .status-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .status-label {
-            font-size: 0.7rem;
-            color: #747d8c;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-
-        .status-text {
-            font-size: 0.9rem;
-            color: #2f3542;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        /* 🔥 iOS 26 LIQUID GLASS SWITCH - REFINED COMPACT */
-        .iphone-switch-container {
+        .workday-control-wrapper {
             position: relative;
-            width: 48px;
-            height: 28px;
-        }
-
-        .iphone-switch-input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        /* The Track (Background) */
-        .iphone-switch-label {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #f0f2f5;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border-radius: 50px;
-            box-shadow:
-                inset 1px 1px 3px rgba(163, 177, 198, 0.4),
-                inset -1px -1px 3px rgba(255, 255, 255, 1);
-            border: 1px solid rgba(0, 0, 0, 0.03);
+            display: flex;
+            width: 100%;
+            height: 44px;
+            background: linear-gradient(180deg, #3a8fe8 0%, #2d6fc2 100%);
+            border-radius: 22px;
+            /* Закругленные края pill-shape */
+            padding: 2px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            margin-bottom: 10px;
         }
 
-        /* Green Gradient for Activity (Fades in/out) */
-        .iphone-switch-label::after {
-            content: "";
+        .workday-bg-bubble {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .open .iphone-switch-label::after {
-            opacity: 1;
-        }
-
-        /* 🔥 THE LIQUID KNOB */
-        .iphone-switch-label:before {
-            position: absolute;
-            content: "";
-            height: 24px;
-            width: 24px;
+            top: 2px;
             left: 2px;
-            bottom: 2px;
+            width: calc(50% - 2px);
+            height: calc(100% - 4px);
+            background: #ecf0f1;
+            /* Серый (или белый off-white) для активного состояния */
+            border-radius: 20px;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            /* Эффект пружины */
+            z-index: 1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
 
-            /* Glass Material */
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(14px) saturate(180%);
-            -webkit-backdrop-filter: blur(14px) saturate(180%);
-
-            border-radius: 50%;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-
-            /* 3D Glass Borders & Shadows */
-            box-shadow:
-                0 2px 6px rgba(0, 0, 0, 0.12),
-                inset 0 2px 4px rgba(255, 255, 255, 0.95),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.1),
-                inset 1px 0 2px rgba(255, 255, 255, 0.5);
-
-            border: 1px solid rgba(255, 255, 255, 0.8);
+        .workday-btn {
+            flex: 1;
+            position: relative;
             z-index: 2;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: transparent;
+            /* Скрыт по умолчанию (на синем фоне) */
+            transition: color 0.2s ease, opacity 0.2s ease;
+            outline: none;
+            user-select: none;
+            /* Чтобы текст не выделялся при свайпе */
+            -webkit-user-select: none;
+            pointer-events: none;
+            /* Чтобы клики проходили сквозь текст на контейнер/свайп (опционально, но лучше оставить клик) */
+            /* Вернем pointer-events: auto для кликабельности, если свайп не сработает */
+            pointer-events: auto;
         }
-
-        /* 🔥 INFLATION EFFECT (PRESS) */
-        .iphone-switch-input:active+.iphone-switch-label:before {
-            width: 31px;
-            height: 26px;
-            left: 1px;
-            bottom: 1px;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.5);
-            box-shadow:
-                0 4px 10px rgba(0, 0, 0, 0.16),
-                inset 0 3px 5px rgba(255, 255, 255, 1),
-                inset 0 -3px 5px rgba(0, 0, 0, 0.12);
-        }
-
-
-
-        .open .iphone-switch-label:before {
-            transform: translateX(20px);
-            background: rgba(255, 255, 255, 0.35);
-            border-color: rgba(255, 255, 255, 0.95);
-        }
-
-        /* Combined Active + Open state */
-        .open .iphone-switch-input:active+.iphone-switch-label:before {
-            transform: translateX(14px);
-            width: 32px;
-        }
-
-
 
         /* Когда кнопка над пузырем (активная) - текст темный и ВИДИМЫЙ */
         .workday-btn.active-text {
@@ -2316,83 +2039,68 @@
         }
 
         .object-card__button {
-            flex: 1 1 100%; /* Full width */
-            display: flex;
+            flex: 1 1 calc(50% - 10px);
+            display: inline-flex;
             align-items: center;
-            justify-content: flex-start; /* Left align like menu */
-            gap: 12px;
-            padding: 10px 14px; /* Neater padding */
-            border-radius: 0; /* Remove rounded corners for list look */
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 14px;
+            border-radius: 12px;
             border: none;
-            border-bottom: 1px solid #f0f0f0;
-            background: #ffffff;
-            color: #333; /* Pure dark text like admin functions */
-            font-size: 0.9rem; /* Slightly smaller font */
-            font-weight: 500;
+            background: #f0f3f6;
+            color: #2c3e50;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
             text-decoration: none;
-            box-shadow: none;
-        }
-
-        .object-card__button:first-child {
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-        }
-
-        .object-card__button:last-child {
-            border-bottom: none;
-            border-bottom-left-radius: 12px;
-            border-bottom-right-radius: 12px;
         }
 
         .object-card__button:hover {
-            transform: none;
-            background: #f3f4f6;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(44, 62, 80, 0.15);
         }
 
         .object-card__button--primary {
-            color: #333;
-            background: #ffffff;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: #ffffff;
+        }
+
+        .object-card__button--primary:hover {
+            background: linear-gradient(135deg, #2f86c9, #2474a7);
         }
 
         .object-card__button--accent {
-            color: #333;
-            background: #ffffff;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: #ffffff;
+        }
+
+        .object-card__button--accent:hover {
+            background: linear-gradient(135deg, #e38c0a, #d66d19);
         }
 
         .object-card__button--warning {
-            color: #333;
-            background: #ffffff;
+            background: #ffe08a;
+            color: #8a6d1f;
+        }
+
+        .object-card__button--warning:hover {
+            background: #ffd24d;
         }
 
         .object-card__button--danger {
-            color: #dc2626; /* Red text for Exit */
-            background: #ffffff;
+            background: #fde1e1;
+            color: #c0392b;
         }
 
         .object-card__button--danger:hover {
-            background: #fef2f2;
+            background: #f8c9c9;
         }
 
         .object-card__button--plain {
-            color: #4b5563;
             background: #ffffff;
-            border: 1px solid #f3f4f6; /* Keep subtle border for plain if needed, or remove */
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        /* Ensure actions container stacks them vertically without gaps */
-        .object-card__actions {
-            display: flex;
-            flex-direction: column !important;
-            width: 100%;
-            gap: 0;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            /* overflow: hidden; Removed to prevent clipping */
-            min-height: min-content;
-            margin-top: 10px;
+            color: #2c3e50;
+            border: 1px solid #dfe6e9;
         }
 
         .object-card__notice {
@@ -2432,7 +2140,6 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-top: 20px;
         }
 
         .object-card__select {
@@ -2457,7 +2164,7 @@
         }
 
         .object-card__spacer {
-            height: 120px;
+            height: 56px;
             flex: 0 0 auto;
         }
 
@@ -2469,18 +2176,9 @@
 
             .object-details__card {
                 width: 95vw;
-                height: auto;
-                max-height: 85vh;
+                height: 80vh;
                 border-radius: 18px;
                 padding: 18px 18px 24px;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .object-card__button {
-                padding: 8px 12px;
-                font-size: 0.85rem;
-                min-height: 36px;
             }
 
             .object-card__actions .object-card__button {
@@ -2613,396 +2311,10 @@
             }
         }
 
-        /* 🔥 MODERN TELEGRAM-STYLE NAVIGATION V2 */
-        .modern-menu-container {
-            margin-top: auto;
-            padding: 10px 0;
-            position: sticky;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px) saturate(140%);
-            -webkit-backdrop-filter: blur(10px) saturate(140%);
-            z-index: 100;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .modern-menu {
-            display: flex;
-            background: rgba(240, 242, 245, 0.35);
-            border-radius: 16px;
-            padding: 4px;
-            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
-            position: relative;
-            /* Context for absolute indicator */
-        }
-
-        /* subtle noise/texture so glass has something to refract */
-        .modern-menu::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: 16px;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
-            background-size: 6px 6px;
-            opacity: 0.25;
-            pointer-events: none;
-        }
-
-        /* 🔥 GLASS ANIMATED INDICATOR */
-        /* 🔥 GLASS ANIMATED INDICATOR (LIQUID STYLE) */
-        /* 🔥 GLASS ANIMATED INDICATOR (V8 ACTIVE REFRACTION) */
-        .menu-indicator {
-            position: absolute;
-            top: 4px;
-            bottom: 4px;
-            left: 4px;
-            width: 25%;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(8px) saturate(160%) contrast(105%);
-            -webkit-backdrop-filter: blur(8px) saturate(160%) contrast(105%);
-            border: 1px solid rgba(255, 255, 255, 0.55);
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08), inset 0 0 14px rgba(255, 255, 255, 0.18);
-            transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-            z-index: 3;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        /* ✨ GLARE ANIMATION (High Contrast) */
-        .menu-indicator::after { display: none; }
-
-        @keyframes refractive-glare {
-            0% {
-                left: -200%;
-                opacity: 0;
+        @media (min-width: 769px) {
+            .sidebar-handle {
+                display: none;
             }
-
-            20% {
-                opacity: 1;
-            }
-
-            100% {
-                left: 200%;
-                opacity: 0;
-            }
-        }
-
-        /* 🎈 ACTIVE DRAGGING: LIQUID DISTORTION */
-        /* This simulates the 'refraction' on the text below by distorting the glass above it */
-        .menu-indicator.touch-active {
-            transform: scale(0.97);
-            background: rgba(255, 255, 255, 0.16);
-            backdrop-filter: blur(10px) saturate(180%) contrast(110%);
-            -webkit-backdrop-filter: blur(10px) saturate(180%) contrast(110%);
-            border-color: rgba(255, 255, 255, 0.7);
-            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12), inset 0 0 18px rgba(255, 255, 255, 0.22);
-        }
-
-        /* 🔥 LENS EFFECT (LIQUID MASK) */
-        .menu-indicator-inner {
-            position: absolute;
-            top: -4px;
-            left: -4px;
-            /* Will be set by JS to match menu width */
-            width: 100%;
-            height: calc(100% + 8px);
-            display: flex;
-            padding: 4px;
-            box-sizing: border-box;
-            pointer-events: none;
-            will-change: transform;
-            /* 💎 SYNC TRANSITION WITH PARENT */
-            transition: left 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        /* 💎 EDGE BLUR / DISTORTION OVERLAY */
-        .menu-indicator::after {
-            content: "";
-            display: block;
-            position: absolute;
-            inset: 0;
-            z-index: 5;
-            pointer-events: none;
-            
-            /* Stronger blur for "thick glass" distortion */
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            
-            /* White tint for volume */
-            background: rgba(255, 255, 255, 0.25);
-            
-            /* Mask to apply blur ONLY on wide edges (0-35% and 65-100%) */
-            -webkit-mask-image: linear-gradient(to right, 
-                black 0%, 
-                rgba(0,0,0,0.9) 10%,
-                transparent 35%, 
-                transparent 65%, 
-                rgba(0,0,0,0.9) 90%,
-                black 100%
-            );
-            mask-image: linear-gradient(to right, 
-                black 0%, 
-                rgba(0,0,0,0.9) 10%,
-                transparent 35%, 
-                transparent 65%, 
-                rgba(0,0,0,0.9) 90%,
-                black 100%
-            );
-        }
-
-        .lens-btn {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            color: #3498db;
-            /* Active Blue */
-            font-weight: 700;
-            transition: none;
-            /* No transition for lens content */
-        }
-
-        .lens-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-            transform: scale(1.1);
-        }
-
-        .lens-btn .modern-menu-label {
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-        }
-
-        /* Force outer buttons to stay gray */
-        .modern-menu-btn {
-            color: #95a5a6 !important;
-        }
-
-        .modern-menu-btn.active {
-            color: #95a5a6 !important;
-            transform: none !important;
-        }
-
-        .modern-menu-btn svg {
-            transform: none !important;
-        }
-
-        .modern-menu-btn {
-            flex: 1;
-            border: none;
-            background: transparent;
-            padding: 10px 0;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            color: #95a5a6;
-            transition: color 0.2s ease;
-            /* Only color transitions */
-            -webkit-tap-highlight-color: transparent;
-            position: relative;
-            z-index: 2;
-            /* Above indicator */
-        }
-
-        .modern-menu-btn:hover {
-            color: #7f8c8d;
-        }
-
-        .modern-menu-btn.active {
-            color: #3498db;
-            font-weight: 700;
-            background: transparent;
-            /* Remove bg, indicator handles it */
-            box-shadow: none;
-            /* Remove shadow, indicator handles it */
-            transform: none;
-            /* Simplify transform for text */
-        }
-
-        .modern-menu-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-            transition: transform 0.2s ease;
-        }
-
-        .modern-menu-btn.active svg {
-            transform: scale(1.1);
-        }
-
-        .modern-menu-label {
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-        }
-
-        /* 🔥 MODERN SEARCH TAB UI */
-        .modern-search-wrapper {
-            margin-top: 0;
-            margin-bottom: 8px;
-            padding: 10px;
-            z-index: 10;
-            background: transparent;
-        }
-
-        .modern-search-box {
-            position: relative;
-            display: flex;
-            align-items: center;
-            background: #f1f3f6;
-            border-radius: 24px;
-            padding: 4px 18px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            transition: all 0.3s ease;
-        }
-
-        .modern-menu-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .modern-search-box:focus-within {
-            background: #ffffff;
-            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.15);
-            border-color: rgba(52, 152, 219, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .modern-search-input {
-            width: 100%;
-            border: none;
-            padding: 12px 5px;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #2c3e50;
-            outline: none;
-            background: transparent;
-        }
-
-        .modern-search-icon {
-            color: #3498db;
-            margin-right: 12px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            opacity: 0.8;
-        }
-
-        .modern-search-box:focus-within .modern-search-icon {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        .modern-search-input::placeholder {
-            color: #95a5a6;
-            font-weight: 400;
-        }
-
-        /* Adjust tab pane for bottom search */
-        #nav-search.active {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            overflow: visible;
-        }
-
-        /* 🔥 LIST CARDS STYLING */
-        /* Overriding default checkbox-item for Lists */
-        #listsList .checkbox-item {
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 12px 14px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-            position: relative;
-        }
-
-        #listsList .checkbox-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-            border-color: #3498db;
-        }
-
-        /* Apply same card style to masters and inspectors in Admin view */
-        #nav-lists[data-admin="true"] .list-control-buttons .checkbox-item,
-        #nav-lists[data-admin="true"] #inspectorsList .checkbox-item {
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 12px 14px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-            position: relative;
-        }
-
-        #nav-lists[data-admin="true"] .list-control-buttons .checkbox-item:hover,
-        #nav-lists[data-admin="true"] #inspectorsList .checkbox-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-            border-color: #3498db;
-        }
-
-        /* Selected cards: keep default look (no blue outline) */
-        #nav-lists[data-admin="true"] .checkbox-item:has(input:checked),
-        #nav-lists[data-admin="true"] .checkbox-item.selected {
-            outline: none;
-            border-color: #e0e0e0;
-        }
-
-        /* Make the label take full width space */
-        #listsList .checkbox-item label {
-            flex: 1;
-            font-weight: 600;
-            color: #2c3e50;
-            cursor: pointer;
-            margin-left: 10px;
-            font-size: 0.95rem;
-        }
-
-        /* Style the counter inside the card */
-        .list-counter {
-            float: right;
-            background: #ecf0f1;
-            color: #7f8c8d;
-            font-size: 0.8rem;
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-
-        .list-counter.completed {
-            background: #def7e5;
-            color: #27ae60;
-        }
-
-        /* Hide Scrollbar for Panel */
-        .tab-pane {
-            flex: 1;
-            overflow: visible;
-            min-height: auto;
-            padding-bottom: 0;
-        }
-
-        .tab-pane::-webkit-scrollbar {
-            display: none;
         }
 
         /* 🔥 СТИЛИ УПРАВЛЕНИЯ ИНСПЕКТОРАМИ */
@@ -3479,11 +2791,59 @@
             width: 100%;
             height: 50px;
             background-color: #95a5a6 !important;
+            /* Gray (Closed) by default */
+            border-radius: 25px;
+            display: flex;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* 🔥 UX FIXES */
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: pan-y;
+        }
+
+        .workday-iphone-slider.open {
+            background-color: #27ae60 !important;
+            /* Green (Open) */
+        }
+
+        .workday-bg-bubble {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 8px);
+            height: calc(100% - 8px);
+            background-color: white;
+            border-radius: 21px;
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+
+        .workday-iphone-slider.open .workday-bg-bubble {
+            transform: translateX(calc(100% + 8px));
+            /* Slide to right */
+        }
+
+        .workday-btn {
+            flex: 1;
+            z-index: 2;
+            opacity: 0;
+            /* Invisible buttons */
+            cursor: pointer;
+            background: transparent;
+            border: none;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Хлястик удалён по требованию -->
+    <!-- 🔥 СВАЙП-ХЛЯСТИК ДЛЯ МОБИЛЬНЫХ -->
+    <div id="mobileSidebarHandle" class="sidebar-handle" onclick="toggleMobileSidebar()"></div>
 
     <!-- 🔥 МЕНЮ ЛОГИНА -->
     <div class="login-overlay" id="loginOverlay">
@@ -3559,238 +2919,104 @@
 
             <!-- 🔥 СЕКЦИЯ УПРАВЛЕНИЯ РАБОЧИМ ДНЕМ (ДЛЯ ИНСПЕКТОРОВ) -->
             <div class="control-section" id="workDaySection" style="display: none;">
-                <div class="workday-control-card" id="workDayControlWrapper">
-                    <div class="workday-status-box">
-                        <div class="status-dot pulse-gray" id="workDayStatusDot"
-                            style="background-color: #95a5a6; box-shadow: none;"></div>
-                        <div class="status-info">
-                            <div class="status-label">Рабочий день</div>
-                            <div class="status-text" id="workDayStatusText" style="color: #95a5a6;">Обновление...</div>
-                        </div>
-                    </div>
-                    <div class="iphone-switch-container">
-                        <input type="checkbox" id="workDayToggle" class="iphone-switch-input" disabled>
-                        <label for="workDayToggle" class="iphone-switch-label"></label>
-                    </div>
+                <div class="control-section-title">📅 Управление рабочим днем</div>
+                <div class="workday-iphone-slider" id="workDayControlWrapper">
+                    <div class="workday-bg-bubble" id="workDayBubble"></div>
                 </div>
+                <div class="work-day-indicator closed" id="workDayIndicator">Статус: День закрыт</div>
             </div>
 
-            <!-- 🔥 СЕКЦИЯ АДМИНИСТРАТОРА (iOS‑меню, как настройки iPhone) -->
+            <!-- 🔥 СЕКЦИЯ АДМИНИСТРАТОРА -->
             <div class="control-section" id="adminSection" style="display: none;">
                 <div class="control-section-title">⚙️ Административные функции</div>
+                <div class="control-buttons-grid">
+                    <button class="admin-btn" onclick="toggleInspectorsHomes()">Инспекторы</button>
+                    <button class="admin-btn" id="managementBtn"
+                        onclick="toggleInspectorsManagement()">Управление</button>
+                    <button class="admin-btn" onclick="openAddObjectList()">Список объектов</button>
 
-                <div class="admin-settings-ios">
-                    <div class="admin-settings-group">
-                        <button class="admin-settings-item" onclick="toggleInspectorsHomes()">
-                            <span class="admin-settings-emoji">🏠</span>
-                            <span class="admin-settings-text">Домашние адреса</span>
-                        </button>
-
-                        <button class="admin-settings-item" id="managementBtn" onclick="toggleInspectorsManagement()">
-                            <span class="admin-settings-emoji">🧭</span>
-                            <span class="admin-settings-text">Кастомизация и управление инспекторами</span>
-                        </button>
-
-                        <button class="admin-settings-item" onclick="openAddObjectList()">
-                            <span class="admin-settings-emoji">🏢</span>
-                            <span class="admin-settings-text">Добавить объект на карту</span>
-                        </button>
-
-                        <button class="admin-settings-item" onclick="openWorkDayReport()">
-                            <span class="admin-settings-emoji">📈</span>
-                            <span class="admin-settings-text">KPI</span>
-                        </button>
-
-                        <button class="admin-settings-item" onclick="archiveCompletedObjects()">
-                            <span class="admin-settings-emoji">🗄️</span>
-                            <span class="admin-settings-text">Архивировать выполненные</span>
-                        </button>
-                    </div>
                 </div>
             </div>
 
-            <!-- 🔥 NEW 4-TAB STRUCTURE -->
-            <div class="tab-content" id="mainTabContent">
-
-                <!-- 1. 🔥 LISTS TAB (Redesigned with Internal Overflow) -->
-                <div class="tab-pane active" id="nav-lists">
-                    
-                    <!-- 🔥 СПИСКИ ОБЪЕКТОВ -->
-                    <div class="filter-section" style="margin-top: 10px;">
-                        <div class="admin-settings-ios">
-                            <div class="admin-settings-group">
-                                <!-- Header inside the group -->
-                                <div class="admin-settings-item" onclick="toggleAccordion(this)" style="cursor: pointer; background: #f8fafc; border-bottom: 1px solid #e5e5ea;">
-                                    <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-                                        <span class="admin-settings-emoji">📋</span>
-                                        <span class="admin-settings-text" style="font-weight: 700; font-size: 14px;">Списки объектов</span>
-                                    </div>
-                                    <label class="master-checkbox" onclick="event.stopPropagation()" style="display: flex; align-items: center; gap: 6px; font-weight: normal; font-size: 0.85rem; margin-right: 4px;">
-                                        <input type="checkbox" id="selectAllListsHeader"> Все
-                                    </label>
-                                </div>
-                                
-                                <!-- Scrollable Content (Closed by default) -->
-                                <div class="accordion-content" id="listsList" style="max-height: 280px; overflow-y: auto;">
-                                    <div class="loading" style="padding: 15px; text-align: center; color: #888;">Загрузка списков...</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 🔥 СПИСКИ ИНСПЕКТОРОВ -->
-                    <div class="filter-section" id="inspectorsFilterSection" style="margin-top: 15px; display: none;">
-                        <div class="admin-settings-ios">
-                            <div class="admin-settings-group">
-                                <!-- Header inside the group -->
-                                <div class="admin-settings-item" onclick="toggleAccordion(this)" style="cursor: pointer; background: #f8fafc; border-bottom: 1px solid #e5e5ea;">
-                                    <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-                                        <span class="admin-settings-emoji">👥</span>
-                                        <span class="admin-settings-text" style="font-weight: 700; font-size: 14px;">Списки инспекторов</span>
-                                    </div>
-                                    <label class="master-checkbox" onclick="event.stopPropagation()" style="display: flex; align-items: center; gap: 6px; font-weight: normal; font-size: 0.85rem; margin-right: 4px;">
-                                        <input type="checkbox" id="selectAllInspectorsHeader"> Все
-                                    </label>
-                                </div>
-
-                                <!-- Scrollable Content (Closed by default) -->
-                                <div class="accordion-content" id="inspectorsList" style="max-height: 280px; overflow-y: auto;">
-                                    <!-- JS will populate this -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. 🔥 OBJECTS TAB -->
-                <div class="tab-pane" id="nav-objects">
-                    
-                    <!-- STACK 1: IN PROGRESS -->
-                    <div class="filter-section" style="margin-top: 10px;">
-                        <div class="admin-settings-ios">
-                            <div class="admin-settings-group">
-                                <div class="admin-settings-item" onclick="toggleAccordion(this)" style="cursor: pointer; background: #f8fafc; border-bottom: 1px solid #e5e5ea;">
-                                    <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-                                        <span class="admin-settings-emoji">🔥</span>
-                                        <span class="admin-settings-text" style="font-weight: 700; font-size: 14px;">В работе</span>
-                                        <span id="activeObjectsBadge" class="list-counter" style="font-size: 9px; padding: 1px 4px; min-width: 20px; margin-left: 5px;">0</span>
-                                    </div>
-                                    <label class="master-checkbox" onclick="event.stopPropagation()" style="display: flex; align-items: center; gap: 6px; font-weight: normal; font-size: 0.85rem; margin-right: 4px;">
-                                        <input type="checkbox" id="filterOnlyActive" onchange="toggleShowOnlyActive(this)"> Только в работе
-                                    </label>
-                                </div>
-                                <div class="accordion-content" id="objectsActiveList" style="max-height: 280px; overflow-y: auto;"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- STACK 2: NEW -->
-                    <div class="filter-section" style="margin-top: 10px;">
-                        <div class="admin-settings-ios">
-                            <div class="admin-settings-group">
-                                <div class="admin-settings-item" onclick="toggleAccordion(this)" style="cursor: pointer; background: #f8fafc; border-bottom: 1px solid #e5e5ea;">
-                                    <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-                                        <span class="admin-settings-emoji">🆕</span>
-                                        <span class="admin-settings-text" style="font-weight: 700; font-size: 14px;">Новые</span>
-                                    </div>
-                                </div>
-                                <div class="accordion-content" id="objectsNewList" style="max-height: 280px; overflow-y: auto;"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- STACK 3: COMPLETED -->
-                    <div class="filter-section" style="margin-top: 10px;">
-                        <div class="admin-settings-ios">
-                            <div class="admin-settings-group">
-                                <div class="admin-settings-item" onclick="toggleAccordion(this)" style="cursor: pointer; background: #f8fafc; border-bottom: 1px solid #e5e5ea;">
-                                    <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-                                        <span class="admin-settings-emoji">✅</span>
-                                        <span class="admin-settings-text" style="font-weight: 700; font-size: 14px;">Выполнены</span>
-                                    </div>
-                                </div>
-                                <div class="accordion-content" id="objectsCompletedList" style="max-height: 280px; overflow-y: auto;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. 🔥 MAP TAB -->
-                <div class="tab-pane" id="nav-map"></div>
-
+            <!-- 🔥 ТАБЫ -->
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab('filters')">Фильтры</button>
+                <button class="tab-button" id="objectsTabBtn" onclick="switchTab('objects')"
+                    style="display: none;">Список объектов</button>
             </div>
 
-            <!-- 🔥 MODERN MENU V2 (4 Buttons) -->
-            <div class="modern-menu-container">
-                <div class="modern-search-wrapper">
-                    <div class="modern-search-box">
-                        <div class="modern-search-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                        </div>
-                        <input type="text" id="searchInput" class="modern-search-input"
-                            placeholder="Найти адрес, номер точки..." onkeyup="updateFilters()">
+            <div class="tab-content">
+                <!-- 🔥 ВКЛАДКА ФИЛЬТРОВ -->
+                <div class="tab-pane active" id="filters-tab">
+                    <div class="filter-section">
+                        <div class="filter-title">🔍 Поиск объекта</div>
+                        <input type="text" id="searchInput" class="search-box"
+                            placeholder="Введите номер точки или адрес..." onkeyup="updateFilters()">
                     </div>
-                </div>
-                <div class="modern-menu">
-                    <div class="menu-indicator" id="menuIndicator">
-                        <div class="menu-indicator-inner" id="menuIndicatorInner">
-                            <!-- CLONED LENS BUTTONS (For Liquid Mask Effect) -->
-                            <div class="lens-btn">
-                                <svg viewBox="0 0 24 24"><path d="M4 14h4v-4H4v4zm0 5h4v-4H4v4zM4 9h4V5H4v4zm5 5h12v-4H9v4zm0 5h12v-4H9v4zM9 5v4h12V5H9z" /></svg>
-                                <span class="modern-menu-label">Списки</span>
-                            </div>
-                            <div class="lens-btn">
-                                <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" /></svg>
-                                <span class="modern-menu-label">Объекты</span>
-                            </div>
-                            <div class="lens-btn">
-                                <svg viewBox="0 0 24 24"><path d="M20.5 3l-5.5 2-6-2-5.5 2v16l5.5-2 6 2 5.5-2V3zm-11 2.18l6 2.04v11.6l-6-2.04V5.18zM5 6.82l3.5-1.27v11.6L5 18.42V6.82zM19 18.42l-3.5 1.27V8.09L19 6.82v11.6z" /></svg>
-                                <span class="modern-menu-label">Карта</span>
-                            </div>
-                            <div class="lens-btn" style="color: #e74c3c;">
-                                <svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" /></svg>
-                                <span class="modern-menu-label">Выход</span>
+
+                    <div class="filter-section" id="inspectorsFilterSection" style="display: none;">
+                        <div class="filter-title">👤 Фильтр по инспекторам</div>
+                        <input type="text" id="searchInspectors" class="search-box"
+                            placeholder="🔍 Поиск по инспекторам..." onkeyup="filterInspectorsList()">
+                        <div class="control-buttons">
+                            <!-- 🔥 ЗАМЕНА КНОПОК НА ЧЕКБОКС "ВСЕ ИНСПЕКТОРЫ" -->
+                            <div class="checkbox-item master-checkbox">
+                                <input type="checkbox" id="selectAllInspectors"
+                                    onchange="toggleAllInspectors(this.checked)">
+                                <label for="selectAllInspectors">Все инспекторы</label>
                             </div>
                         </div>
+                        <div class="checkbox-group" id="inspectorsList">
+                            <div class="loading">Загрузка инспекторов...</div>
+                        </div>
                     </div>
-                    <!-- LISTS -->
-                    <button class="modern-menu-btn active" onclick="switchNav('lists')" id="btn-lists">
-                        <svg viewBox="0 0 24 24">
-                            <path
-                                d="M4 14h4v-4H4v4zm0 5h4v-4H4v4zM4 9h4V5H4v4zm5 5h12v-4H9v4zm0 5h12v-4H9v4zM9 5v4h12V5H9z" />
-                        </svg>
-                        <span class="modern-menu-label">Списки</span>
-                    </button>
 
-                    <!-- OBJECTS -->
-                    <button class="modern-menu-btn" onclick="switchNav('objects')" id="btn-objects">
-                        <svg viewBox="0 0 24 24">
-                            <path
-                                d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
-                        </svg>
-                        <span class="modern-menu-label">Объекты</span>
-                    </button>
+                    <div class="filter-section">
+                        <div class="filter-title">📋 Фильтр по спискам</div>
+                        <div class="list-control-buttons">
+                            <!-- 🔥 ЗАМЕНА КНОПОК НА ЧЕКБОКС "ВСЕ СПИСКИ" -->
+                            <div class="checkbox-item master-checkbox">
+                                <input type="checkbox" id="selectAllLists" onchange="toggleAllLists(this.checked)">
+                                <label for="selectAllLists">Все списки</label>
+                            </div>
+                        </div>
+                        <div class="checkbox-group" id="listsList">
+                            <div class="loading">Загрузка списков...</div>
+                        </div>
+                    </div>
 
-                    <!-- MAP -->
-                    <button class="modern-menu-btn" onclick="switchNav('map')" id="btn-map">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M20.5 3l-5.5 2-6-2-5.5 2v16l5.5-2 6 2 5.5-2V3zm-11 2.18l6 2.04v11.6l-6-2.04V5.18zM5 6.82l3.5-1.27v11.6L5 18.42V6.82zM19 18.42l-3.5 1.27V8.09L19 6.82v11.6z" />
-                        </svg>
-                        <span class="modern-menu-label">Карта</span>
-                    </button>
+                    <div class="filter-section">
+                        <div class="filter-title">⚙️ Настройки отображения</div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="showHidden" onchange="updateFilters(); saveFilterState();">
+                            <label for="showHidden"> МОНИТОРИНГ ЗАВЕРШЕН ✅ </label>
+                        </div>
+                    </div>
 
-                    <!-- EXIT -->
-            <button class="modern-menu-btn" onclick="switchNav('exit')" id="btn-exit" style="color: #e74c3c;">
-                <svg viewBox="0 0 24 24">
-                    <path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path>
-                </svg>
-                <span class="modern-menu-label">Выход</span>
-            </button>
+
                 </div>
+
+
+
+                <!-- 🔥 ВЫЕЗЖАЮЩЕЕ МЕНЮ СПИСКА ОБЪЕКТОВ (add_object) -->
+                <div class="tab-pane" id="objects-tab">
+                    <div class="filter-section">
+                        <div class="filter-title">🔍 Поиск в списке</div>
+                        <input type="text" id="searchListInput" class="search-box"
+                            placeholder="Введите номер точки или адрес..." onkeyup="updateObjectsList()">
+                    </div>
+                    <div class="objects-list">
+                        <div class="objects-list-title">📋 Список объектов</div>
+                        <div id="objectsListContent">
+                            <div class="loading">Загрузка объектов...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 🔥 ВЫХОД (ПЕРЕНЕСЕН ВНИЗ МЕНЮ) -->
+            <div style="margin-top: auto; padding: 10px;">
+                <button class="object-card__button object-card__button--danger" onclick="logout()"
+                    style="width: 100%; justify-content: center;">🚪 Выйти</button>
             </div>
         </div>
 
@@ -3799,28 +3025,17 @@
 
             <!-- 🔥 MAP SEARCH CONTROL -->
             <div id="mapSearchControl" class="map-search-control">
-                <button id="mapMenuToggle" class="map-search-btn" onclick="toggleMapQuickMenu()" title="Меню">
+                <button id="mapSearchToggle" class="map-search-btn" onclick="toggleMapSearch()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="4" y="7" width="16" height="2" fill="#000"/>
-                        <rect x="4" y="11" width="16" height="2" fill="#000"/>
-                        <rect x="4" y="15" width="16" height="2" fill="#000"/>
+                        <circle cx="11" cy="11" r="7" stroke="black" stroke-width="2" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="black" stroke-width="2"
+                            stroke-linecap="round" />
                     </svg>
                 </button>
                 <div id="mapSearchBar" class="map-search-bar hidden">
                     <input type="text" id="mapSearchInput" placeholder="ID (точно) или адрес..."
                         onkeydown="handleMapSearchKey(event)">
                     <button id="mapSearchClear" class="map-search-clear" onclick="clearMapSearch()">✕</button>
-                </div>
-                <div id="mapQuickMenu" class="map-quick-menu hidden">
-                    <button class="map-search-btn" onclick="toggleMapSearch()" title="Поиск">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="11" cy="11" r="7" stroke="black" stroke-width="2" />
-                            <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="black" stroke-width="2" stroke-linecap="round" />
-                        </svg>
-                    </button>
-                    <button id="mapGearBtn" class="map-search-btn" onclick="openSidebarFromMap()" title="Меню">
-                        <span style="font-size: 26px; line-height: 1; color: black; font-family: sans-serif;">&#9881;</span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -3858,12 +3073,12 @@
             bottom: 160px !important;
             /* Back to bottom, lifted up */
             top: auto !important;
-            right: 10px;
+            right: 20px;
             z-index: 2000;
             display: flex;
             align-items: center;
             flex-direction: row-reverse;
-            gap: 0;
+            gap: 12px;
         }
 
         .map-search-btn {
@@ -3901,32 +3116,18 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
-            padding: 0;
+            padding: 0 16px;
             width: 0;
-            margin-right: 0;
             opacity: 0;
             overflow: hidden;
-            transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s, padding 0.35s, margin-right 0.35s;
+            transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
             pointer-events: none;
         }
 
         .map-search-bar.active {
             width: 280px;
             opacity: 1;
-            padding: 0 16px;
-            margin-right: 12px;
             pointer-events: all;
-        }
-
-        /* Quick two-button menu */
-        .map-quick-menu {
-            display: flex;
-            gap: 10px;
-            margin-right: 12px;
-        }
-
-        .map-quick-menu.hidden {
-            display: none;
         }
 
         #mapSearchInput {
@@ -3964,24 +3165,6 @@
         .map-search-clear:hover {
             background: rgba(0, 0, 0, 0.2);
             color: #000;
-        }
-
-        /* 🔥 POSITIONING FOR CONFIRM MODALS */
-        #logoutConfirmModal, #addObjectConfirmModal {
-            z-index: 2147483647 !important;
-            position: fixed !important;
-            align-items: flex-end !important;
-            padding-bottom: 80px !important;
-            left: 0;
-            right: 0;
-            justify-content: center;
-        }
-
-        @media (min-width: 769px) {
-            #logoutConfirmModal, #addObjectConfirmModal {
-                justify-content: flex-start !important;
-                padding-left: 20px !important;
-            }
         }
 
         .map-search-bar.active {
@@ -4147,11 +3330,11 @@
                 justify-content: center;
             }
         }
+        }
     </style>
     <script type="text/javascript">
         // 🔥 КОНФИГУРАЦИЯ
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzQaSca9cV6rUxb3LV-0dISNbrZIdyeKjKhiCH9n5K3FTWYIB-vJH_qjJ9QhUxpMQuw/exec';
-        window.workDayDataLoaded = false; // 🔥 FLAG TO PREVENT EARLY "CLOSED" STATE
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyU797HPV7MCvo03P5JvTQg0fUJncKlOx8Hdl-yqxHfEY7NpDBLGhTRoitSSTA9pGzE/exec';
 
         // 🔥 YANDEX DISK CONFIGURATION (Корпоративный)
         const YANDEX_OAUTH_TOKEN = 'y0__xCtoIulqveAAhjinD0gyIzumRaVmdCKk27u3ItXUoc6rNG4XSwS7w';
@@ -4212,8 +3395,8 @@
         let objectsData = [];
         let map, objectManager, activeObjectsLayer, inspectorsHomesLayer;
         let showInspectorsHomes = false;
-        let isWorkDayOpen = getWorkDayStatus().isOpen;
-        let workDayStartTimeServer = getWorkDayStatus().startTime;
+        let isWorkDayOpen = false;
+        let workDayStartTimeServer = null;
         let availableIcons = {};
         let availableColors = [];
 
@@ -4227,7 +3410,7 @@
                 const filterState = {
                     inspectors: getSelectedInspectors(),
                     lists: getSelectedLists(),
-                    showHidden: document.getElementById('showHidden') ? document.getElementById('showHidden').checked : false,
+                    showHidden: document.getElementById('showHidden').checked,
                     timestamp: Date.now()
                 };
                 localStorage.setItem(FILTERS_STATE_KEY, JSON.stringify(filterState));
@@ -4265,8 +3448,7 @@
                 const list = checkbox.id.replace('list_', '');
                 checkbox.checked = filterState.lists.includes(list);
             });
-            const showHiddenEl = document.getElementById('showHidden');
-            if (showHiddenEl) showHiddenEl.checked = !!filterState.showHidden;
+            document.getElementById('showHidden').checked = !!filterState.showHidden;
         }
 
         function saveGlobalFilters(state) {
@@ -4314,8 +3496,7 @@
             });
 
             // 🔥 СБРАСЫВАЕМ ЧЕКБОКС "МОНИТОРИНГ"
-            const showHiddenEl = document.getElementById('showHidden');
-            if (showHiddenEl) showHiddenEl.checked = false;
+            document.getElementById('showHidden').checked = false;
 
             console.log('✅ Фильтры сброшены к состоянию по умолчанию');
             saveFilterState();
@@ -4343,29 +3524,6 @@
                     toggleMobileSidebar();
                 }
             });
-
-            // 🟦 Admin (Император): включаем выпадающие списки и стиль карточек
-            try {
-                if (userAccessRights === 'Император') {
-                    const navLists = document.getElementById('nav-lists');
-                    if (navLists) navLists.setAttribute('data-admin', 'true');
-                    const inspAcc = document.getElementById('inspectorsAccordion');
-                    if (inspAcc) inspAcc.style.display = '';
-                    const allListsHeader = document.getElementById('selectAllListsHeader');
-                    if (allListsHeader) {
-                        allListsHeader.addEventListener('change', (e) => {
-                            toggleAllLists(e.target.checked);
-                        });
-                    }
-                    const allInspHeader = document.getElementById('selectAllInspectorsHeader');
-                    if (allInspHeader) {
-                        allInspHeader.addEventListener('change', (e) => {
-                            toggleAllInspectors(e.target.checked);
-                        });
-                    }
-                }
-            } catch (_) {}
-            applySelectedCardStyles();
         });
 
         // 🔥 ПРОВЕРКА МОБИЛЬНОГО УСТРОЙСТВА
@@ -4386,8 +3544,6 @@
             } else {
                 sidebar.classList.remove('collapsed');
                 toggleBtn.innerHTML = '◀';
-                // Open menu defaults to Lists
-                switchNav('lists');
             }
         }
 
@@ -4402,8 +3558,6 @@
             } else {
                 sidebar.classList.add('mobile-open');
                 toggleBtn.textContent = '✕ Закрыть';
-                // Open menu defaults to Lists
-                switchNav('lists');
             }
         }
 
@@ -4734,88 +3888,11 @@
         }
 
         function logout() {
-            openLogoutConfirmation();
-        }
-
-        function openLogoutConfirmation() {
-            const modal = document.getElementById('logoutConfirmModal');
-            const content = document.getElementById('logoutConfirmContent');
-
-            if (!modal || !content) return;
-
-            // Reset transform if needed
-            if (window.resetLogoutCardTransform) window.resetLogoutCardTransform();
-
-            content.innerHTML = `
-                <div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 10px 10px 15px;">
-                    <div style="font-size: 2.8rem; margin-bottom: 12px;">🚪</div>
-                    <h2 style="font-size: 1.4rem; font-weight: 800; color: #1f2937; margin-bottom: 8px;">Выход из системы</h2>
-                    <p style="font-size: 0.95rem; color: #6b7280; line-height: 1.4;">Вы уверены, что хотите выйти?<br>Сессия будет завершена.</p>
-                </div>
-
-                <div style="margin-top: 5px;">
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <button onclick="performLogout()" style="
-                            width: 100%; 
-                            padding: 16px; 
-                            background: linear-gradient(135deg, #ef4444, #dc2626); 
-                            color: white; 
-                            border: 1px solid rgba(255,255,255,0.1); 
-                            border-radius: 16px; 
-                            font-weight: 700; 
-                            font-size: 1.05rem; 
-                            cursor: pointer; 
-                            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25), inset 0 1px 0 rgba(255,255,255,0.2); 
-                            transition: transform 0.1s, box-shadow 0.2s;
-                        " onmousedown="this.style.transform='scale(0.98)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'">Да, выйти</button>
-                        
-                        <button onclick="closeLogoutConfirmation()" style="
-                            width: 100%; 
-                            padding: 16px; 
-                            background: #f9fafb; 
-                            color: #374151; 
-                            border: 1px solid #e5e7eb; 
-                            border-radius: 16px; 
-                            font-weight: 600; 
-                            font-size: 1.05rem; 
-                            cursor: pointer;
-                            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-                            transition: background 0.2s;
-                        " onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='#f9fafb'">Отмена</button>
-                    </div>
-
-                    <!-- Swipe Handle -->
-                    <div id="logoutConfirmHandle" class="balloon-handle" style="margin-top: 20px; width: 100%; height: 20px; display: flex; justify-content: center; align-items: center; cursor: grab; opacity: 0.4;">
-                        <span style="width: 44px; height: 5px; background: #9ca3af; border-radius: 10px;"></span>
-                    </div>
-                </div>
-            `;
-
-            modal.classList.remove('hidden');
-            
-            // Force flex
-            modal.style.display = 'flex';
-
-            // Init swipe for this specific modal instance handle
-            setTimeout(() => {
-                const handle = document.getElementById('logoutConfirmHandle');
-                // if (handle) initLogoutSwipe(handle); // Replaced by generic swipe in initSwipeAnimations
-            }, 50);
-        }
-
-        function closeLogoutConfirmation() {
-            const modal = document.getElementById('logoutConfirmModal');
-            if (modal) modal.classList.add('hidden');
-            switchNav('lists'); // Revert slider to start
-        }
-
-        function performLogout() {
-            closeLogoutConfirmation();
             clearSession();
             stopAutoRefresh();
             document.getElementById('loginOverlay').style.display = 'flex';
             document.getElementById('mainContainer').style.display = 'none';
-            // document.getElementById('userInfo').style.display = 'none'; // Element might not exist in new design
+            document.getElementById('userInfo').style.display = 'none';
             document.getElementById('adminSection').style.display = 'none';
             document.getElementById('workDaySection').style.display = 'none';
             document.getElementById('passwordInput').value = '';
@@ -4940,7 +4017,7 @@
                     const data = JSON.parse(cached);
                     if (data && data.success) {
                         console.log('🟢 Data loaded from CACHE');
-                        processServerData(data, true); // 🔥 Pass true for isCache
+                        processServerData(data); // Рендерим сразу
                         hasCache = true;
                     }
                 }
@@ -4988,36 +4065,16 @@
                 delete window[callbackName];
                 if (!hasCache) {
                     showError('Ошибка загрузки данных. Проверьте подключение к интернету.');
-                } else {
-                    // 🔥 FALLBACK: Unlock UI if script fails
-                    window.workDayDataLoaded = true;
-                    updateWorkDayButtons();
                 }
             };
 
             document.head.appendChild(script);
-
-            // 🔥 SAFETY TIMEOUT (3s): Force unlock UI if network hangs
-            if (hasCache) {
-                setTimeout(() => {
-                    if (!window.workDayDataLoaded) {
-                        console.warn('⚠️ Safety Timeout (3s): UI Unlocked');
-                        window.workDayDataLoaded = true;
-                        updateWorkDayButtons();
-                    }
-                }, 3000);
-            }
         }
 
-        function processServerData(data, isCache = false) {
+        function processServerData(data) {
             // 🔥 ВОЗВРАЩАЕМ ОРИГИНАЛЬНЫЕ ID (без преобразования в строки!)
             objectsData = data.points;
             window.addedObjects = data.addedObjects || [];
-
-            // 🔥 ONLY SET DATA LOADED IF NOT FROM CACHE
-            if (!isCache) {
-                window.workDayDataLoaded = true; // 🔥 FRESH DATA IS HERE, ALLOW UI UPDATES
-            }
 
             // 🔥 СОХРАНЯЕМ ЛОКАЛЬНЫЕ ИЗМЕНЕНИЯ, КОТОРЫЕ БЫЛИ СДЕЛАНЫ НЕДАВНО (в течение последних 10 секунд)
             const recentChanges = window.RECENT_INSPECTOR_CHANGES || {};
@@ -5156,83 +4213,52 @@
                 allSystemInspectors = allSystemInspectors.filter(inspector => inspector !== 'Admin');
             }
 
-                        allSystemInspectors.forEach(inspector => {
-                            const style = getInspectorStyle(inspector);
-                            const stats = inspectorStats[inspector] || { total: 0, completed: 0, active: 0 };
-            
-                            const hasAccessToObjects = userAccessRights === 'Император' ||
-                                userAccessRights === 'Администратор' ||
-                                isSameInspector(inspector, currentUser);
-            
-                            if (hasAccessToObjects) {
-                                const checkbox = document.createElement('div');
-                                checkbox.className = 'admin-settings-item';
-                                checkbox.style.justifyContent = 'space-between'; // Push content to edges
-                                
-                                // Toggle checkbox on row click
-                                checkbox.onclick = (e) => {
-                                    if (e.target.type !== 'checkbox') {
-                                        const inp = document.getElementById(`insp_${inspector}`);
-                                        if (inp) {
-                                            inp.checked = !inp.checked;
-                                            inp.onchange(); // Fire change event manually
-                                        }
-                                    }
-                                };
-            
-                                const isChecked = isSameInspector(inspector, currentUser) ? 'checked' : '';
-                                const counterClass = (inspector === 'Admin' ? 'admin' : '') + ' ' + (style.status !== 'active' ? 'inactive' : '');
-            
-                                checkbox.innerHTML = `
-                                    <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
-                                        <span class="admin-settings-emoji">${style.icon}</span>
-                                        <span class="admin-settings-text">${inspector}</span>
-                                    </div>
-                                    <div style="display: flex; align-items: center; gap: 10px;">
-                                        <span class="inspector-counter ${counterClass}" style="font-size: 9px; padding: 1px 4px; min-width: 20px;">
-                                            ${stats.completed}/${stats.total}
-                                        </span>
-                                        <input type="checkbox" id="insp_${inspector}" onchange="onInspectorChange()" 
-                                               ${isChecked}
-                                               style="width: 16px; height: 16px; accent-color: #3b82f6; cursor: pointer;">
-                                    </div>
-                                `;
-                                inspectorsList.appendChild(checkbox);
-                            }
-                        });
-            
-                        const listsList = document.getElementById('listsList');
-                        listsList.innerHTML = '';
-            
-                        uniqueLists.forEach(list => {
-                            const stats = listStats[list] || { total: 0, completed: 0, active: 0 };
-                            const checkbox = document.createElement('div');
-                            checkbox.className = 'admin-settings-item';
-                            checkbox.style.justifyContent = 'space-between';
-            
-                            checkbox.onclick = (e) => {
-                                if (e.target.type !== 'checkbox') {
-                                    const inp = document.getElementById(`list_${list}`);
-                                    if (inp) {
-                                        inp.checked = !inp.checked;
-                                        inp.onchange();
-                                    }
-                                }
-                            };
-            
-                            checkbox.innerHTML = `
-                                <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
-                                    <span class="admin-settings-emoji">📁</span>
-                                    <span class="admin-settings-text">${list}</span>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                     <span class="list-counter" style="font-size: 9px; padding: 1px 4px; min-width: 20px;">(${stats.completed}/${stats.total})</span>
-                                    <input type="checkbox" id="list_${list}" onchange="onListChange()" checked
-                                           style="width: 16px; height: 16px; accent-color: #3b82f6; cursor: pointer;">
-                                </div>
-                            `;
-                            listsList.appendChild(checkbox);
-                        });
+            allSystemInspectors.forEach(inspector => {
+                const style = getInspectorStyle(inspector);
+                const stats = inspectorStats[inspector] || { total: 0, completed: 0, active: 0 };
+
+                const hasAccessToObjects = userAccessRights === 'Император' ||
+                    userAccessRights === 'Администратор' ||
+                    isSameInspector(inspector, currentUser);
+
+                if (hasAccessToObjects) {
+                    const checkbox = document.createElement('div');
+                    checkbox.className = 'checkbox-item';
+
+                    checkbox.innerHTML = `
+                <input type="checkbox" id="insp_${inspector}" onchange="onInspectorChange()" 
+                       ${isSameInspector(inspector, currentUser) ? 'checked' : ''}>
+                <span class="inspector-icon">${style.icon}</span>
+                <span class="color-dot" style="background-color: ${style.color}"></span>
+                <label for="insp_${inspector}">
+                    ${inspector}
+                </label>
+                <span class="inspector-counter ${inspector === 'Admin' ? 'admin' : ''} 
+                      ${style.status !== 'active' ? 'inactive' : ''}">
+                    ${stats.completed}/${stats.total}
+                </span>
+            `;
+                    inspectorsList.appendChild(checkbox);
+                }
+            });
+
+            const listsList = document.getElementById('listsList');
+            listsList.innerHTML = '';
+
+            uniqueLists.forEach(list => {
+                const stats = listStats[list] || { total: 0, completed: 0, active: 0 };
+                const checkbox = document.createElement('div');
+                checkbox.className = 'checkbox-item';
+                checkbox.innerHTML = `
+            <input type="checkbox" id="list_${list}" onchange="onListChange()" checked>
+            <label for="list_${list}">
+                ${list} 
+                <span class="list-counter">(${stats.completed}/${stats.total})</span>
+            </label>
+        `;
+                listsList.appendChild(checkbox);
+            });
+
             setTimeout(() => {
                 updateInspectorCounters();
 
@@ -5380,179 +4406,6 @@
 
 
 
-        // 🔥 MODERN NAVIGATION SWITCHER V2
-        function switchNav(tabName) {
-            console.log('🔘 Switched to:', tabName);
-
-            // 1. Update Buttons
-            document.querySelectorAll('.modern-menu-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            const activeBtn = document.getElementById(`btn-${tabName}`);
-            if (activeBtn) {
-                activeBtn.classList.add('active');
-
-                // Move Glass Indicator
-                const indicator = document.getElementById('menuIndicator');
-                if (indicator) {
-                    indicator.style.width = `${activeBtn.offsetWidth}px`;
-                    indicator.style.left = `${activeBtn.offsetLeft}px`;
-
-                    // 💎 SYNC LENS EFFECT (Counter-movement)
-                    const indicatorInner = document.getElementById('menuIndicatorInner');
-                    if (indicatorInner) {
-                        indicatorInner.style.left = `-${activeBtn.offsetLeft}px`;
-                    }
-                }
-            }
-
-            // 2. Hide all Panes
-            document.querySelectorAll('.tab-pane').forEach(pane => {
-                pane.style.display = 'none';
-                pane.classList.remove('active');
-            });
-
-            // 3. Show Target Pane
-            const targetPane = document.getElementById(`nav-${tabName}`);
-            if (targetPane) {
-                targetPane.style.display = 'block';
-                setTimeout(() => targetPane.classList.add('active'), 10);
-            }
-
-            // 4. Specific Logic
-            if (tabName === 'objects') {
-                updateObjectsList();
-            } else if (tabName === 'lists') {
-                updateFilters(); // Refresh stats
-            } else if (tabName === 'map') {
-                // Mobile: close sidebar; Desktop: keep sidebar visible
-                const sidebar = document.getElementById('sidebar');
-                if (sidebar && checkMobileDevice() && sidebar.classList.contains('mobile-open')) {
-                    sidebar.classList.remove('mobile-open');
-                }
-                const searchWrapper = document.querySelector('.modern-search-wrapper');
-                if (searchWrapper) searchWrapper.style.display = '';
-            } else if (tabName === 'exit') {
-                openLogoutConfirmation();
-            }
-
-            // Toggle bottom search visibility: hide on Lists, show otherwise
-            const searchWrapper = document.querySelector('.modern-search-wrapper');
-            if (searchWrapper) {
-                if (tabName === 'lists') searchWrapper.style.display = 'none';
-                else searchWrapper.style.display = '';
-            }
-        }
-
-        // 🔥 TOUCH SLIDER LOGIC (Direct 1:1 Drag on Menu)
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initial Indicator Position
-            setTimeout(() => switchNav('lists'), 500);
-
-            // Variables for Dragging
-            let isDragging = false;
-            let startX = 0;
-            let startLeft = 0;
-
-            // Elements
-            const menuContainer = document.querySelector('.modern-menu');
-            const indicator = document.getElementById('menuIndicator');
-            const btnLists = document.getElementById('btn-lists');
-            const btnObjects = document.getElementById('btn-objects');
-            const btnSearch = document.getElementById('btn-map');
-            const btnExit = document.getElementById('btn-exit');
-
-            if (menuContainer && indicator) {
-                
-                // 💎 INITIALIZE LENS WIDTH
-                const indicatorInner = document.getElementById('menuIndicatorInner');
-                if (indicatorInner) {
-                    indicatorInner.style.width = `${menuContainer.offsetWidth}px`;
-                    
-                    // Handle Resize
-                    window.addEventListener('resize', () => {
-                         indicatorInner.style.width = `${menuContainer.offsetWidth}px`;
-                         // Re-sync position
-                         const currentLeft = indicator.offsetLeft;
-                         indicatorInner.style.left = `-${currentLeft}px`;
-                    });
-                }
-
-                // 1. TOUCH START
-                menuContainer.addEventListener('touchstart', e => {
-                    e.stopPropagation(); // 🛡️ Prevent Sidebar from reacting
-
-                    isDragging = true;
-                    startX = e.changedTouches[0].screenX;
-                    startLeft = indicator.offsetLeft;
-
-                    // ⚡ Disable transition for instant follow
-                    indicator.style.transition = 'none';
-                    if (indicatorInner) indicatorInner.style.transition = 'none';
-                    indicator.classList.add('touch-active');
-                }, { passive: false });
-
-                // 2. TOUCH MOVE (The Drag)
-                menuContainer.addEventListener('touchmove', e => {
-                    if (!isDragging) return;
-                    e.stopPropagation(); // 🛡️ CRITICAL: Stops swipe from bubbling to sidebar
-                    // e.preventDefault(); // Uncomment if page scrolls (optional)
-
-                    const currentX = e.changedTouches[0].screenX;
-                    const delta = currentX - startX;
-                    let newLeft = startLeft + delta;
-
-                    // 🔒 Clamp boundaries (approximate based on container width)
-                    const maxLeft = menuContainer.offsetWidth - indicator.offsetWidth - 8; // padding adj
-                    if (newLeft < 4) newLeft = 4;
-                    if (newLeft > maxLeft) newLeft = maxLeft;
-
-                    indicator.style.left = `${newLeft}px`;
-
-                    // 💎 SYNC LENS EFFECT (Counter-movement)
-                    const indicatorInner = document.getElementById('menuIndicatorInner');
-                    if (indicatorInner) {
-                        indicatorInner.style.left = `-${newLeft}px`;
-                    }
-                }, { passive: false });
-
-                // 3. TOUCH END (Snap to nearest)
-                menuContainer.addEventListener('touchend', e => {
-                    if (!isDragging) return;
-                    isDragging = false;
-                    e.stopPropagation();
-
-                    // 🎨 Re-enable transition for snap
-                    indicator.style.transition = '';
-                    if (indicatorInner) indicatorInner.style.transition = '';
-                    indicator.classList.remove('touch-active');
-
-                    // 🧮 Calculate Centers to find nearest tab
-                    const indicatorCenter = indicator.offsetLeft + (indicator.offsetWidth / 2);
-
-                    const centerL = btnLists.offsetLeft + (btnLists.offsetWidth / 2);
-                    const centerO = btnObjects.offsetLeft + (btnObjects.offsetWidth / 2);
-                    const centerS = btnSearch.offsetLeft + (btnSearch.offsetWidth / 2);
-                    const centerE = btnExit ? btnExit.offsetLeft + (btnExit.offsetWidth / 2) : 99999;
-
-                    const distL = Math.abs(indicatorCenter - centerL);
-                    const distO = Math.abs(indicatorCenter - centerO);
-                    const distS = Math.abs(indicatorCenter - centerS);
-                    const distE = Math.abs(indicatorCenter - centerE);
-
-                    // Find min distance
-                    const minDist = Math.min(distL, distO, distS, distE);
-
-                    if (minDist === distL) switchNav('lists');
-                    else if (minDist === distO) switchNav('objects');
-                    else if (minDist === distS) switchNav('map');
-                    else if (minDist === distE) switchNav('exit');
-                    else switchNav('lists'); // Fallback
-
-                }, { passive: false });
-            }
-        });
-
         // 🔥 ФИЛЬТРАЦИЯ И КАРТА
         function getSelectedInspectors() {
             const selected = [];
@@ -5572,47 +4425,11 @@
             return selected;
         }
 
-        window.isOnlyActiveMode = false;
-
-        function toggleShowOnlyActive(checkbox) {
-            window.isOnlyActiveMode = checkbox.checked;
-            updateFilters();
-            // Force update list to reflect changes (though updateFilters calls updateMap, which doesn't always refresh list)
-            updateObjectsList();
-        }
-
         function getFilteredObjects() {
             const selectedInspectors = getSelectedInspectors();
             const selectedLists = getSelectedLists();
-            const showHiddenEl = document.getElementById('showHidden');
-            const showHidden = showHiddenEl ? showHiddenEl.checked : false;
-            const searchInput = document.getElementById('searchInput');
-            const searchText = searchInput ? searchInput.value.toLowerCase() : '';
-
-            // 🔥 GLOBAL ACTIVE OVERRIDE (PRIORITY 1)
-            if (window.isOnlyActiveMode) {
-                return objectsData.filter(obj => {
-                    // 1. Permission Check
-                    const hasAccess = userAccessRights === 'Император' ||
-                                      userAccessRights === 'Администратор' ||
-                                      isSameInspector(obj.inspector, currentUser) ||
-                                      hasFilterAccessToInspector(obj.inspector);
-                    
-                    if (!hasAccess) return false;
-
-                    // 2. Status Check (Active Only)
-                    if (!(obj.entryTime && !obj.exitTime)) return false;
-
-                    // 3. Search Check
-                    if (searchText &&
-                        !obj.id.toString().toLowerCase().includes(searchText) &&
-                        !obj.address.toLowerCase().includes(searchText)) {
-                        return false;
-                    }
-                    
-                    return true;
-                });
-            }
+            const showHidden = document.getElementById('showHidden').checked;
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
 
             if (userAccessRights === 'Император' || userAccessRights === 'Администратор') {
                 return objectsData.filter(obj => {
@@ -5827,7 +4644,7 @@
 
             updateInspectorCounters();
 
-            if (document.getElementById('nav-objects') && document.getElementById('nav-objects').classList.contains('active')) {
+            if (document.getElementById('objects-tab').classList.contains('active')) {
                 updateObjectsList();
             }
         }
@@ -6011,17 +4828,10 @@
             if (isActive) { badgeClass = 'object-card__badge object-card__badge--active'; badgeText = 'В работе'; }
             else if (isCompleted) { badgeClass = 'object-card__badge object-card__badge--completed'; badgeText = 'Выполнена'; }
 
-            let yandexBtnText = '📁 Яндекс Диск';
-            if (!isActive) {
-                yandexBtnText = '📁 Просмотр фотоотчета Я.Диск';
-            } else {
-                yandexBtnText = '✨ Создать папки';
-            }
-
             const checklistButton = obj.checklistLink ?
                 `<a href="${obj.checklistLink}" target="_blank" class="object-card__button object-card__button--primary">📝 Чек-лист</a>` : '';
             const yandexDiskButton = obj.yandexDiskLink ?
-                `<button type="button" class="object-card__button object-card__button--primary" data-yandex-object="${obj.id}" data-yandex-link="${obj.yandexDiskLink}">${yandexBtnText}</button>` : '';
+                `<button type="button" class="object-card__button object-card__button--primary" data-yandex-object="${obj.id}" data-yandex-link="${obj.yandexDiskLink}">📁 Яндекс Диск</button>` : '';
 
             const canMarkEntryExit = (userAccessRights === 'Император' || userAccessRights === 'Администратор') ||
                 isSameInspector(obj.inspector, currentUser);
@@ -6032,9 +4842,9 @@
                 if (isNew && canMarkEntryExit) {
                     const canEnter = canInspectorEnterObject(obj.inspector, obj.id);
                     if (canEnter.canEnter) {
-                        entrySection = `<div class="object-card__actions"><button class="object-card__button object-card__button--primary" onclick="markEntry('${obj.id}')">➡️ Вход</button></div>`;
+                        entrySection = `<div class="object-card__actions"><button class="object-card__button object-card__button--primary" onclick="markEntry('${obj.id}')">🚪 Вход</button></div>`;
                     } else {
-                        entrySection = `<div class="object-card__actions"><button class="object-card__button object-card__button--primary" disabled>➡️ Вход</button></div>`;
+                        entrySection = `<div class="object-card__actions"><button class="object-card__button object-card__button--primary" disabled>🚪 Вход</button></div>`;
                         notices += `<div class="object-card__notice object-card__notice--warning">${canEnter.message}</div>`;
                         if (canEnter.activeObjectId) {
                             const activeObj = objectsData.find(o => o.id == canEnter.activeObjectId);
@@ -6044,10 +4854,9 @@
                         }
                     }
                 } else if (isActive && canMarkEntryExit) {
-                    const exitIcon = `<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor;margin-right:8px;"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" /></svg>`;
-                    entrySection = `<div class="object-card__actions"><button class="object-card__button object-card__button--danger" onclick="markExit('${obj.id}')">${exitIcon} Выход</button></div>`;
+                    entrySection = `<div class="object-card__actions"><button class="object-card__button object-card__button--danger" onclick="markExit('${obj.id}')">🚪 Выход</button></div>`;
                     if (userAccessRights === 'Император' || userAccessRights === 'Администратор') {
-                        entrySection += `<div class="object-card__actions"><button class="object-card__button object-card__button--danger" onclick="cancelEntry('${obj.id}')">${exitIcon} Отменить вход</button></div>`;
+                        entrySection += `<div class="object-card__actions"><button class="object-card__button object-card__button--danger" onclick="cancelEntry('${obj.id}')">Отменить вход</button></div>`;
                     }
                 } else if (!canMarkEntryExit) {
                     notices += `<div class="object-card__notice object-card__notice--info">⚠️ Доступно только инспектору: ${obj.inspector}</div>`;
@@ -6372,6 +5181,9 @@
                 cleanupCallback();
                 if (result.success && result.updated) {
                     showNotification(`✅ Вход отмечен для точки ${objectId}`, 'success');
+
+                    // Обновляем данные в фоне
+                    setTimeout(() => loadData(), 2000);
                 } else {
                     showNotification('❌ Ошибка: ' + (result.message || 'Не удалось отметить вход'), 'error');
                     // Если ошибка - откатываем изменения? Пока оставим как есть, данные обновятся при refresh
@@ -6416,31 +5228,8 @@
                 if (result.success && result.updated) {
                     showNotification(`✅ Выход отмечен и точка ${objectId} выполнена`, 'success');
 
-                    // 🔥 АВТОСКРЫТИЕ ВЫПОЛНЕННОЙ ТОЧКИ ЧЕРЕЗ 4 СЕКУНДЫ
-                    setTimeout(() => {
-                        const showHiddenCheckbox = document.getElementById('showHidden');
-                        const showHidden = showHiddenCheckbox ? showHiddenCheckbox.checked : false;
-
-                        // Если "Показать скрытые" выключено, удаляем точку с карты
-                        if (!showHidden) {
-                            console.log(`💨 Автоскрытие выполненной точки ${objectId}`);
-
-                            try {
-                                // Ищем и удаляем из objectManager (обычные точки)
-                                const toRemove1 = [];
-                                objectManager.objects.each(obj => { if (obj.id == objectId) toRemove1.push(obj); });
-                                toRemove1.forEach(obj => objectManager.objects.remove(obj));
-
-                                // Ищем и удаляем из activeObjectsLayer (активные точки)
-                                const toRemove2 = [];
-                                activeObjectsLayer.objects.each(obj => { if (obj.id == objectId) toRemove2.push(obj); });
-                                toRemove2.forEach(obj => activeObjectsLayer.objects.remove(obj));
-
-                            } catch (e) {
-                                console.error('Ошибка при автоскрытии точки:', e);
-                            }
-                        }
-                    }, 4000); // 4 секунды задержка
+                    // Обновляем данные в фоне
+                    setTimeout(() => loadData(), 2000);
 
                 } else {
                     showNotification('❌ Ошибка: ' + (result.message || 'Не удалось отметить выход'), 'error');
@@ -6507,6 +5296,8 @@
                 cleanupCallback();
                 if (result.success && result.updated) {
                     showNotification(`✅ Вход отменен для точки ${objectId}`, 'success');
+
+                    loadData();
                 } else {
                     showNotification('❌ Ошибка: ' + (result.message || 'Не удалось отменить вход'), 'error');
                 }
@@ -6617,7 +5408,6 @@
             window[callbackName] = function (result) {
                 cleanupCallback();
                 if (result.success) {
-                    window.workDayDataLoaded = true; // 🔥 DATA LOADED FLAG
                     isWorkDayOpen = !!result.open;
                     workDayStartTimeServer = result.openTime || null;
                     if (isWorkDayOpen) {
@@ -6888,12 +5678,6 @@
             updateFilters();
             saveFilterState();
             updateMasterCheckboxes();
-            applySelectedCardStyles();
-            const header = document.getElementById('selectAllInspectorsHeader');
-            if (header) {
-                header.checked = checked;
-                header.indeterminate = false;
-            }
         }
 
         function toggleAllLists(checked) {
@@ -6902,47 +5686,29 @@
             updateFilters();
             saveFilterState();
             updateMasterCheckboxes();
-            applySelectedCardStyles();
-            const header = document.getElementById('selectAllListsHeader');
-            if (header) {
-                header.checked = checked;
-                header.indeterminate = false;
-            }
         }
 
         function updateMasterCheckboxes() {
             // Инспекторы
             const inspectorCheckboxes = Array.from(document.querySelectorAll('#inspectorsList input[type="checkbox"]'));
-            const masterInsp = document.getElementById('selectAllInspectorsHeader');
+            const masterInsp = document.getElementById('selectAllInspectors');
             if (masterInsp && inspectorCheckboxes.length > 0) {
                 const allChecked = inspectorCheckboxes.every(cb => cb.checked);
                 masterInsp.checked = allChecked;
+                // Можно добавить indeterminate, если нужно
                 const anyChecked = inspectorCheckboxes.some(cb => cb.checked);
                 masterInsp.indeterminate = anyChecked && !allChecked;
             }
 
             // Списки
             const listCheckboxes = Array.from(document.querySelectorAll('#listsList input[type="checkbox"]'));
-            const masterList = document.getElementById('selectAllListsHeader');
+            const masterList = document.getElementById('selectAllLists');
             if (masterList && listCheckboxes.length > 0) {
                 const allChecked = listCheckboxes.every(cb => cb.checked);
                 masterList.checked = allChecked;
                 const anyChecked = listCheckboxes.some(cb => cb.checked);
                 masterList.indeterminate = anyChecked && !allChecked;
             }
-        }
-
-        function applySelectedCardStyles() {
-            const container = document.getElementById('nav-lists');
-            if (!container) return;
-            const items = container.querySelectorAll('.checkbox-item');
-            items.forEach(item => {
-                const input = item.querySelector('input[type="checkbox"]');
-                if (!input) return;
-                const update = () => item.classList.toggle('selected', input.checked);
-                input.addEventListener('change', update);
-                update();
-            });
         }
 
         function filterInspectorsList() {
@@ -6965,36 +5731,16 @@
             saveFilterState();
             updateListCounters();
             updateMasterCheckboxes();
-            updateAccordionSelectedMeta();
         }
 
         function onListChange() {
             updateFilters();
             saveFilterState();
             updateMasterCheckboxes();
-            updateAccordionSelectedMeta();
         }
 
         function updateFilters() {
             updateMap();
-        }
-
-        function toggleAccordion(header) {
-            const content = header.nextElementSibling;
-            if (!content) return;
-            content.classList.toggle('active');
-        }
-
-        function updateAccordionSelectedMeta() {
-            const listsMeta = document.getElementById('listsSelectedMeta');
-            const listsChecked = document.querySelectorAll('#listsList input[type="checkbox"]:checked').length;
-            const allListsChecked = document.getElementById('selectAllLists') && document.getElementById('selectAllLists').checked ? 1 : 0;
-            if (listsMeta) listsMeta.textContent = (listsChecked + allListsChecked) ? `${listsChecked + allListsChecked} выбрано` : '';
-
-            const inspMeta = document.getElementById('inspectorsSelectedMeta');
-            const inspChecked = document.querySelectorAll('#inspectorsList input[type="checkbox"]:checked').length;
-            const allInspChecked = document.getElementById('selectAllInspectors') && document.getElementById('selectAllInspectors').checked ? 1 : 0;
-            if (inspMeta) inspMeta.textContent = (inspChecked + allInspChecked) ? `${inspChecked + allInspChecked} выбрано` : '';
         }
 
         function switchTab(tabName) {
@@ -7010,67 +5756,58 @@
         }
 
         function updateObjectsList() {
-            const activeRoot = document.getElementById('objectsActiveList');
-            const newRoot = document.getElementById('objectsNewList');
-            const completedRoot = document.getElementById('objectsCompletedList');
-            
-            if (!activeRoot || !newRoot || !completedRoot) return;
-
-            const searchInputEl = document.getElementById('searchInput') || document.getElementById('searchListInput');
-            const searchText = ((searchInputEl && searchInputEl.value) ? searchInputEl.value : '').toLowerCase();
-
-            // Use getFilteredObjects so it matches the map state
-            const base = getFilteredObjects(); 
-            
-            const matchesSearch = (obj) => {
+            const objectsListContent = document.getElementById('objectsListContent');
+            const searchText = document.getElementById('searchListInput').value.toLowerCase();
+            const filteredObjects = getFilteredObjects().filter(obj => {
                 if (!searchText) return true;
-                return String(obj.id).toLowerCase().includes(searchText) ||
-                       String(obj.list || '').toLowerCase().includes(searchText) ||
-                       String(obj.address || '').toLowerCase().includes(searchText);
-            };
 
-            const activeAll = base.filter(obj => obj.entryTime && !obj.exitTime).filter(matchesSearch);
-            const newAll = base.filter(obj => !obj.entryTime && !obj.exitTime).filter(matchesSearch);
-            const completedAll = base.filter(obj => !!obj.exitTime).filter(matchesSearch);
+                return obj.id.toString().toLowerCase().includes(searchText) ||
+                    obj.address.toLowerCase().includes(searchText);
+            });
 
-            const populate = (container, items, statusIcon) => {
-                container.innerHTML = '';
-                if (!items || items.length === 0) {
-                    container.innerHTML = '<div style="padding:15px; text-align:center; color:#999; font-size:0.85rem;">Нет объектов</div>';
-                    return;
+            if (filteredObjects.length === 0) {
+                objectsListContent.innerHTML = '<div class="loading">Нет объектов для отображения</div>';
+                return;
+            }
+
+            objectsListContent.innerHTML = '';
+
+            filteredObjects.forEach(obj => {
+                const style = getInspectorStyle(obj.inspector);
+
+                const isNew = !obj.entryTime && !obj.exitTime;
+                const isActive = obj.entryTime && !obj.exitTime;
+                const isCompleted = !!obj.exitTime;
+
+                let statusClass = 'status-new';
+                let statusText = '🆕';
+                if (isCompleted) {
+                    statusClass = 'status-completed';
+                    statusText = '✅';
+                } else if (isActive) {
+                    statusClass = 'status-active';
+                    statusText = '🔵';
                 }
-                items.forEach(obj => {
-                    const row = document.createElement('div');
-                    row.className = 'admin-settings-item';
-                    row.style.cursor = 'pointer';
-                    row.style.borderBottom = '1px solid #f0f0f0';
-                    
-                    row.onclick = () => {
-                        map.setCenter([parseFloat(obj.latitude), parseFloat(obj.longitude)], 17);
-                        showObjectBalloon(obj.id);
-                    };
 
-                    row.innerHTML = `
-                        <div style="display:flex; align-items:center; gap:10px; width:100%;">
-                            <span class="admin-settings-emoji">${statusIcon}</span>
-                            <div style="flex:1;">
-                                <div class="admin-settings-text" style="font-weight:600; font-size:0.9rem;">#${obj.id}</div>
-                                <div class="admin-settings-value" style="margin-top:2px; font-size:0.8rem;">${obj.list || 'Без списка'}</div>
-                            </div>
-                            <span class="admin-settings-value">📍</span>
-                        </div>
-                    `;
-                    container.appendChild(row);
-                });
-            };
+                const objectItem = document.createElement('div');
+                objectItem.className = 'object-item';
+                objectItem.onclick = () => {
+                    map.setCenter([parseFloat(obj.latitude), parseFloat(obj.longitude)], 17);
+                    showObjectBalloon(obj.id);
+                };
 
-            populate(activeRoot, activeAll, '🔥');
-            
-            const activeBadge = document.getElementById('activeObjectsBadge');
-            if (activeBadge) activeBadge.textContent = activeAll.length;
-
-            populate(newRoot, newAll, '🆕');
-            populate(completedRoot, completedAll, '✅');
+                objectItem.innerHTML = `
+                    <div style="flex: 1;">
+                        <div class="object-id">${obj.id}</div>
+                        <div class="object-address">${obj.address}</div>
+                        <div class="object-inspector">${obj.inspector || 'Не назначен'}</div>
+                    </div>
+                    <span class="object-status ${statusClass}">
+                        ${statusText}
+                    </span>
+                `;
+                objectsListContent.appendChild(objectItem);
+            });
         }
 
 
@@ -7357,8 +6094,6 @@
                 if (handle) {
                     handle.classList.add('hidden');
                 }
-                // По умолчанию всегда вкладка "Списки"
-                try { switchNav('lists'); } catch (_) {}
             }
         }
 
@@ -7380,11 +6115,6 @@
                 shouldIgnoreSwipe = false;
                 // Игнорируем глобальный свайп, если трогаем переключатель
                 if (e.target && e.target.closest && e.target.closest('.workday-iphone-slider')) {
-                    shouldIgnoreSwipe = true;
-                }
-
-                // 🔥 ИГНОРИРУЕМ ГЛОБАЛЬНЫЙ СВАЙП, ЕСЛИ ТРОГАЕМ НИЖНЕЕ МЕНЮ (чтобы слайдер не закрывал сайдбар)
-                if (e.target && e.target.closest && e.target.closest('.modern-menu')) {
                     shouldIgnoreSwipe = true;
                 }
 
@@ -7420,8 +6150,8 @@
                 }
             }, { capture: true, passive: true });
 
-        function handleSwipe() {
-            if (!sidebar) return;
+            function handleSwipe() {
+                if (!sidebar) return;
 
                 const swipeX = touchEndX - touchStartX;
                 const swipeY = touchEndY - touchStartY;
@@ -7432,10 +6162,12 @@
                     return;
                 }
 
-            // Свайп ВПРАВО (Открытие) — отключено по требованию
-            // if (!isOpen && swipeX > 40 && touchStartX < 80) {
-            //     toggleMobileSidebar();
-            // }
+                // Свайп ВПРАВО (Открытие)
+                // - Увеличили зону старта до 80px (удобнее с чехом)
+                // - Длина свайпа > 40px (чуть чувствительнее)
+                if (!isOpen && swipeX > 40 && touchStartX < 80) {
+                    toggleMobileSidebar();
+                }
 
                 // Свайп ВЛЕВО (Закрытие)
                 if (isOpen && swipeX < -40) {
@@ -7534,14 +6266,14 @@
         function setWorkDayStateOptimistic(targetOpen, startTime = null) {
             isWorkDayOpen = targetOpen;
             saveWorkDayStatus(targetOpen, startTime);
-            updateWorkDayButtons(true); // 🔥 FORCE UPDATE UI
+            updateWorkDayButtons();
         }
 
         // ОТКАТ (ЕСЛИ ОШИБКА)
         function revertWorkDayState(previousOpen, message) {
             isWorkDayOpen = previousOpen;
             saveWorkDayStatus(previousOpen);
-            updateWorkDayButtons(true); // 🔥 FORCE UPDATE UI
+            updateWorkDayButtons();
             showNotification(`⚠️ Ошибка (откат): ${message}`, 'error');
         }
 
@@ -7552,7 +6284,6 @@
             // 1. МГНОВЕННОЕ ОБНОВЛЕНИЕ UI
             const startTime = new Date().toISOString();
             setWorkDayStateOptimistic(true, startTime);
-            showNotification('🟢 Рабочий день открыт', 'success');
 
             if (!navigator.geolocation) {
                 revertWorkDayState(previousState, 'Геолокация не поддерживается');
@@ -7602,7 +6333,6 @@
 
             // 1. МГНОВЕННОЕ ОБНОВЛЕНИЕ UI
             setWorkDayStateOptimistic(false);
-            showNotification('🔴 Рабочий день закрыт', 'success');
 
             if (!navigator.geolocation) {
                 revertWorkDayState(previousState, 'Геолокация не поддерживается');
@@ -8162,88 +6892,193 @@
         });
 
         // ОБНОВЛЕННАЯ ФУНКЦИЯ КНОПОК
-        // ОБНОВЛЕННАЯ ФУНКЦИЯ КНОПОК
-        function updateWorkDayButtons(force = false) {
-            const statusText = document.getElementById('workDayStatusText');
-            const statusDot = document.getElementById('workDayStatusDot');
-            const toggle = document.getElementById('workDayToggle');
-            const wrapper = document.getElementById('workDayControlWrapper');
+        function updateWorkDayButtons() {
+            const openBtn = document.getElementById('openDayBtn');
+            const closeBtn = document.getElementById('closeDayBtn');
+            const indicator = document.getElementById('workDayIndicator');
+            const bubble = document.getElementById('workDayBubble');
 
-            if (!statusText) return;
+            if (!openBtn || !closeBtn || !indicator || !bubble) return;
 
-            const isLoading = !window.workDayDataLoaded && !force;
+            // Сбрасываем инлайн-стили, если они были установлены предыдущей логикой
+            openBtn.style = '';
+            closeBtn.style = '';
+            openBtn.className = 'workday-btn';
+            closeBtn.className = 'workday-btn';
 
-            if (isLoading) {
-                // === UPDATING (Neutral) ===
-                if (wrapper) wrapper.classList.remove('open');
+            if (isWorkDayOpen) {
+                // ДЕНЬ ОТКРЫТ: Пузырь на "Закрыть" (Справа) - Готов к закрытию
+                bubble.style.transform = 'translateX(100%)';
 
-                if (statusText) {
-                    statusText.textContent = 'Обновление...';
-                    statusText.style.color = '#95a5a6';
-                }
+                openBtn.classList.add('inactive-text');
+                closeBtn.classList.add('active-text'); // Виден текст "Закрыть день"
 
-                if (statusDot) {
-                    statusDot.className = 'status-dot pulse-gray';
-                    statusDot.style.backgroundColor = '#95a5a6';
-                    statusDot.style.boxShadow = 'none';
-                }
+                openBtn.disabled = true; // Уже открыт
+                closeBtn.disabled = false; // Можно закрыть
 
-                if (toggle) {
-                    toggle.checked = false; 
-                    toggle.disabled = true; // Disable interaction while loading
-                }
-            } else if (isWorkDayOpen) {
-                // OPEN STATE
-                statusText.textContent = 'День открыт';
-                statusText.style.color = '#27ae60';
+                indicator.textContent = 'Статус: День открыт';
 
-                if (statusDot) {
-                    statusDot.className = 'status-dot pulse-green';
-                    statusDot.style.backgroundColor = '#27ae60';
-                    statusDot.style.boxShadow = '0 0 8px rgba(39, 174, 96, 0.5)';
-                }
+                // Индикатор зеленый
+                indicator.style.cssText = `
+                    background-color: #ffffff;
+                    border: 2px solid #27ae60;
+                    color: #27ae60;
+                    border-radius: 12px;
+                    padding: 12px;
+                    text-align: center;
+                    width: 100%;
+                    display: block;
+                    margin-top: 10px;
+                    font-weight: 600;
+                    box-sizing: border-box;
+                `;
 
-                if (toggle) {
-                    toggle.checked = true;
-                    toggle.disabled = false;
-                }
-
-                if (wrapper) wrapper.classList.add('open');
             } else {
-                // CLOSED STATE
-                statusText.textContent = 'День закрыт';
-                statusText.style.color = '#7f8c8d';
+                // ДЕНЬ ЗАКРЫТ: Пузырь на "Открыть" (Слева) - Готов к открытию
+                bubble.style.transform = 'translateX(0)';
 
-                if (statusDot) {
-                    statusDot.className = 'status-dot pulse-red';
-                    statusDot.style.backgroundColor = '#e74c3c';
-                    statusDot.style.boxShadow = 'none';
-                }
+                openBtn.classList.add('active-text'); // Виден текст "Открыть день"
+                closeBtn.classList.add('inactive-text');
 
-                if (toggle) {
-                    toggle.checked = false;
-                    toggle.disabled = false;
-                }
+                openBtn.disabled = false; // Можно открыть
+                closeBtn.disabled = true; // Уже закрыт
 
-                if (wrapper) wrapper.classList.remove('open');
+                indicator.textContent = 'Статус: День закрыт';
+
+                // Индикатор нежно-красный
+                indicator.style.cssText = `
+                    background-color: #ffffff;
+                    border: 2px solid #e74c3c;
+                    color: #e74c3c;
+                    border-radius: 12px;
+                    padding: 12px;
+                    text-align: center;
+                    width: 100%;
+                    display: block;
+                    margin-top: 10px;
+                    font-weight: 600;
+                    box-sizing: border-box;
+                `;
             }
         }
     </script>
     <script>
-        // 🔥 СВАЙП ЛОГИКА ДЛЯ РАБОЧЕГО ДНЯ (ТЕПЕРЬ ЧЕРЕЗ TOGGLE)
+        // 🔥 СВАЙП ЛОГИКА ДЛЯ РАБОЧЕГО ДНЯ
         function initWorkDaySwipe() {
-            const toggle = document.getElementById('workDayToggle');
-            if (!toggle) return;
+            const wrapper = document.getElementById('workDayControlWrapper');
+            const bubble = document.getElementById('workDayBubble');
+            if (!wrapper || !bubble) return;
 
-            // Remove old listener if any by cloning (optional, but safer to just add new one)
-            const newToggle = toggle.cloneNode(true);
-            toggle.parentNode.replaceChild(newToggle, toggle);
+            let startX = 0;
+            let isDragging = false;
+            let startTranslate = 0;
 
-            newToggle.addEventListener('change', function (e) {
-                if (this.checked) {
-                    startWorkDay();
+            wrapper.addEventListener('touchstart', (e) => {
+                const overlay = document.getElementById('workDayApprovalOverlay');
+                if (overlay && !overlay.classList.contains('hidden')) return;
+
+                e.stopPropagation(); // 🔥 Stop global handlers
+                isDragging = true;
+                startX = e.touches[0].clientX;
+                bubble.style.transition = 'none';
+
+                // Calculate precise max width based on actual elements
+                const totalWidth = wrapper.offsetWidth;
+                const bubbleWidth = bubble.offsetWidth;
+                const maxTranslate = totalWidth - bubbleWidth - 8; // 8px total padding
+
+                // If Open, we start at maxTranslate, else 0
+                // Match the visual state more accurately
+                startTranslate = isWorkDayOpen ? maxTranslate : 0;
+            }, { passive: false });
+
+            wrapper.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                e.stopPropagation(); // 🔥 Stop global handlers
+
+                const delta = e.touches[0].clientX - startX;
+                let newPos = startTranslate + delta;
+
+                const totalWidth = wrapper.offsetWidth;
+                const bubbleWidth = bubble.offsetWidth;
+                const maxPos = totalWidth - bubbleWidth - 8; // Match start calculation
+
+                if (newPos < 0) newPos = 0;
+                if (newPos > maxPos) newPos = maxPos;
+
+                bubble.style.transform = `translateX(${newPos}px)`;
+
+                // Прожектор
+                const progress = newPos / maxPos;
+                const openBtn = document.getElementById('openDayBtn');
+                const closeBtn = document.getElementById('closeDayBtn');
+
+                if (openBtn && closeBtn) {
+                    openBtn.style.opacity = Math.max(0, 1 - (progress * 1.5));
+                    closeBtn.style.opacity = Math.max(0, (progress - 0.3) * 1.5);
+                }
+
+            }, { passive: false });
+
+            wrapper.addEventListener('touchend', (e) => {
+                if (!isDragging) return;
+                e.stopPropagation(); // 🔥 Stop global handlers
+                isDragging = false;
+
+                // Включаем плавную анимацию для завершения жеста
+                bubble.style.transition = 'transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+
+                // Сброс ручной прозрачности
+                const openBtn = document.getElementById('openDayBtn');
+                const closeBtn = document.getElementById('closeDayBtn');
+
+                // Сначала сбросим
+                if (openBtn) openBtn.style.opacity = '';
+                if (closeBtn) closeBtn.style.opacity = '';
+
+                const endX = e.changedTouches[0].clientX;
+                const delta = endX - startX;
+                const threshold = 40;
+
+                if (isWorkDayOpen) {
+                    // Мы СПРАВА (Открыт). Свайп ВЛЕВО -> Закрыть
+                    if (delta < -threshold) {
+                        bubble.style.transform = 'translateX(0)';
+
+                        // Визуально: стал ЗАКРЫТ (текст "Открыть день" активен)
+                        if (openBtn) {
+                            openBtn.style.opacity = '1';
+                            openBtn.style.color = '#2c3e50';
+                        }
+                        if (closeBtn) closeBtn.style.opacity = '0';
+
+                        setTimeout(() => {
+                            endWorkDay();
+                        }, 500);
+                    } else {
+                        // Возврат вправо (остаться Открытым)
+                        bubble.style.transform = 'translateX(100%)';
+                    }
                 } else {
-                    endWorkDay();
+                    // Мы СЛЕВА (Закрыт). Свайп ВПРАВО -> Открыть
+                    if (delta > threshold) {
+                        bubble.style.transform = 'translateX(100%)';
+
+                        // Визуально: стал ОТКРЫТ (текст "Закрыть день" активен)
+                        if (openBtn) openBtn.style.opacity = '0';
+                        if (closeBtn) {
+                            closeBtn.style.opacity = '1';
+                            closeBtn.style.color = '#2c3e50';
+                        }
+
+                        setTimeout(() => {
+                            startWorkDay();
+                        }, 500);
+                    } else {
+                        // Возврат влево (остаться Закрытым)
+                        bubble.style.transform = 'translateX(0)';
+                    }
                 }
             });
         }
@@ -8672,26 +7507,14 @@
         }
     </script>
     <!-- 🔥 МОДАЛКА ПОДТВЕРЖДЕНИЯ ДОБАВЛЕНИЯ (Add Object) -->
-    <div class="object-details hidden" id="addObjectConfirmModal">
+    <div class="object-details hidden" id="addObjectConfirmModal"
+        style="z-index: 2147483647 !important; position: fixed !important;">
         <div class="object-details__backdrop" style="z-index: 2147483646 !important;"></div>
         <div class="object-details__card" role="dialog" aria-modal="true"
-            style="max-width: 400px; height: auto !important; min-height: auto !important; z-index: 2147483647 !important;">
+            style="max-width: 400px; z-index: 2147483647 !important;">
             <button class="object-details__close" type="button" onclick="closeAddObjectConfirm()">✕</button>
 
             <div id="addObjectConfirmContent">
-                <!-- Dynamic Content Here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- 🔥 МОДАЛКА ПОДТВЕРЖДЕНИЯ ВЫХОДА (Logout) -->
-    <div class="object-details hidden" id="logoutConfirmModal">
-        <div class="object-details__backdrop" style="z-index: 2147483646 !important;"></div>
-        <div class="object-details__card" role="dialog" aria-modal="true"
-            style="max-width: 380px; height: auto !important; min-height: auto !important; padding: 24px 24px 15px !important; z-index: 2147483647 !important;">
-            <button class="object-details__close" type="button" onclick="closeLogoutConfirmation()">✕</button>
-
-            <div id="logoutConfirmContent" style="display: flex; flex-direction: column;">
                 <!-- Dynamic Content Here -->
             </div>
         </div>
@@ -8748,8 +7571,12 @@
             card._resetTransform = resetTransform;
 
             card.addEventListener('touchstart', (e) => {
-                // 🔥 ONLY ALLOW SWIPE ON HANDLE
-                if (!e.target.closest('.balloon-handle')) return;
+                const content = card.querySelector('.object-details__content, #addObjectConfirmContent');
+                // Ignore if scrolling inside content (unless at top)
+                if (content && content.scrollTop > 5) return;
+
+                // Ignore inputs
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
                 startY = e.touches[0].clientY;
                 currentY = startY;
@@ -8778,17 +7605,13 @@
 
                 // Close if pulled > 150px OR fast flick down
                 if (deltaY > 150 || (deltaY > 60 && velocity > 0.5)) {
-                    requestAnimationFrame(() => {
-                        card.style.transition = 'transform 0.4s ease-in';
-                        card.style.transform = 'translateY(100vh)';
-                    });
+                    card.style.transition = 'transform 0.3s ease-out';
+                    card.style.transform = 'translateY(100vh)';
 
                     setTimeout(() => {
-                        if (closeCallback) closeCallback();
-                        // Reset transform after closing to ensure next open is clean
-                        // Use a slight delay or just reset, since it's hidden now
                         resetTransform();
-                    }, 400);
+                        if (closeCallback) closeCallback();
+                    }, 300);
                 } else {
                     // Bounce back
                     if (deltaY > 0) {
@@ -8822,17 +7645,6 @@
                 };
                 enableSwipeDismiss(confirmCard, closeAddObjectConfirm);
             }
-
-            // 3. Logout Confirmation (New)
-            const logoutCard = document.querySelector('#logoutConfirmModal .object-details__card');
-            if (logoutCard) {
-                // Expose reset for openLogoutConfirmation
-                window.resetLogoutCardTransform = () => {
-                    if (logoutCard._resetTransform) logoutCard._resetTransform();
-                    else { logoutCard.style.transform = ''; logoutCard.style.transition = ''; }
-                };
-                enableSwipeDismiss(logoutCard, closeLogoutConfirmation);
-            }
         }
 
 
@@ -8849,63 +7661,34 @@
         function toggleMapSearch() {
             const bar = document.getElementById('mapSearchBar');
             const input = document.getElementById('mapSearchInput');
-            const menu = document.getElementById('mapQuickMenu');
             if (!bar) return;
 
             if (bar.classList.contains('active')) {
-                // Если введен текст - ищем, иначе закрываем
+                // If input has value, maybe search instead of close?
+                // For now: toggle close
                 if (input.value.trim() !== '') {
                     performMapSearch(input.value);
                 } else {
                     bar.classList.remove('active');
-                    if (menu) menu.classList.remove('hidden'); // Показываем кнопки меню
                 }
             } else {
                 bar.classList.add('active');
-                bar.classList.remove('hidden'); 
-                if (menu) menu.classList.add('hidden'); // Скрываем кнопки меню
+                bar.classList.remove('hidden'); // Legacy helper just in case
                 setTimeout(() => input.focus(), 100);
             }
-        }
-
-        function toggleMapQuickMenu() {
-            const menu = document.getElementById('mapQuickMenu');
-            const toggle = document.getElementById('mapMenuToggle');
-            if (!menu) return;
-            const isHidden = menu.classList.contains('hidden');
-            if (isHidden) {
-                menu.classList.remove('hidden');
-            } else {
-                menu.classList.add('hidden');
-            }
-        }
-
-        function openSidebarFromMap() {
-            const sidebar = document.getElementById('sidebar');
-            if (!sidebar) return;
-            if (checkMobileDevice()) {
-                sidebar.classList.add('mobile-open');
-            } else {
-                sidebar.classList.remove('collapsed');
-            }
-            try { switchNav('lists'); } catch (_) {}
-            const menu = document.getElementById('mapQuickMenu');
-            if (menu) menu.classList.add('hidden');
         }
 
         function clearMapSearch() {
             const input = document.getElementById('mapSearchInput');
             const bar = document.getElementById('mapSearchBar');
-            const menu = document.getElementById('mapQuickMenu');
 
             if (input.value === '') {
-                // Если пусто - закрываем
+                // If empty, close
                 bar.classList.remove('active');
-                if (menu) menu.classList.remove('hidden'); // Показываем кнопки меню
             } else {
                 input.value = '';
                 input.focus();
-                performMapSearch(''); // 🔥 Очистить фильтр
+                performMapSearch(''); // 🔥 Clear filter
             }
         }
 
@@ -9019,10 +7802,31 @@
             if (typeof activeObjectsLayer !== 'undefined' && activeObjectsLayer) activeObjectsLayer.setFilter(filterFunction);
         }
 
-        // 🔥 OVERRIDE UPDATE FUNCTION FOR NEW CARD
-        // 🔥 OVERRIDE UPDATE FUNCTION FOR NEW CARD
-        // DUPLICATE FUNCTION REMOVED (Fixed in primary definition)
+        // 🔥 OVERRIDE UPDATE FUNCTION FOR SLIDER
+        window.updateWorkDayButtons = function () {
+            const wrapper = document.getElementById('workDayControlWrapper');
+            const indicator = document.getElementById('workDayIndicator');
+            const bubble = document.getElementById('workDayBubble');
 
+            if (wrapper) {
+                if (isWorkDayOpen) {
+                    wrapper.classList.add('open');
+                } else {
+                    wrapper.classList.remove('open');
+                }
+
+                // 🔥 CRITICAL: Clear inline styles from swipe logic to let CSS take over
+                if (bubble) {
+                    bubble.style.transform = '';
+                    bubble.style.transition = '';
+                }
+            }
+
+            if (indicator) {
+                indicator.className = 'work-day-indicator ' + (isWorkDayOpen ? 'open' : 'closed');
+                indicator.textContent = isWorkDayOpen ? 'Статус: День открыт' : 'Статус: День закрыт';
+            }
+        };
 
         // ==================================================================
         // 🔥 YANDEX DISK FOLDER CREATION HANDLER
@@ -9275,7 +8079,7 @@
 
                 // 🔥 ЕСЛИ ВХОД НЕ ВЫПОЛНЕН - ПРОСТО ОТКРЫВАЕМ ССЫЛКУ
                 if (!isActive) {
-                    btn.innerHTML = '👁️ Просмотр фотоотчета Я.Диск';
+                    btn.innerHTML = '📁 Яндекс Диск';
                     btn.onclick = function () {
                         window.open(yandexLink, '_blank');
                     };
@@ -9316,7 +8120,7 @@
                     };
                 } else {
                     // Папки нет - нужно создать
-                    btn.innerHTML = '✨ Создать папки';
+                    btn.innerHTML = '📁 Яндекс Диск';
                     btn.onclick = function () {
                         handleYandexDiskButton(objectId, yandexLink);
                     };
@@ -9324,365 +8128,7 @@
             }
         }
     </script>
-    <!-- 🔥 WORKDAY REPORT MODAL -->
-    <div class="workday-modal hidden" id="workDayReportModal">
-        <div class="workday-modal__backdrop"></div>
-        <div class="workday-modal__card" role="dialog" aria-modal="true"
-            style="max-width: 95%; width: 1200px; height: 90vh; display: flex; flex-direction: column;">
-            <div
-                style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid #eee;">
-                <h2 style="margin: 0; font-size: 1.5rem;">📈 KPI</h2>
-                <button class="workday-modal__close" type="button" onclick="closeWorkDayReport()"
-                    style="position: static;">✕</button>
-            </div>
-
-            <div style="padding: 15px 0; display: flex; gap: 10px; align-items: center;">
-                <label for="reportDateStart" style="font-weight:600;">От:</label>
-                <input type="date" id="reportDateStart" class="search-box" style="width: auto; margin-bottom: 0;">
-                
-                <label for="reportDateEnd" style="font-weight:600;">По:</label>
-                <input type="date" id="reportDateEnd" class="search-box" style="width: auto; margin-bottom: 0;">
-                
-                <button class="primary-btn" onclick="loadWorkDayReport()" style="margin-bottom: 0; padding: 10px 20px;">Обновить</button>
-            </div>
-            <div id="workDayReportContent" style="flex: 1; overflow: auto; padding-right: 5px;">
-                <div class="loading">Загрузка отчета...</div>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        .report-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-
-        .report-table th,
-        .report-table td {
-            border: 1px solid #e0e0e0;
-            padding: 10px;
-            text-align: left;
-        }
-
-        .report-table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .bg-yellow-soft {
-            background-color: #fffde7;
-        }
-
-        .bg-red-soft {
-            background-color: #ffebee;
-        }
-
-        .text-red {
-            color: #d32f2f;
-            font-weight: bold;
-        }
-
-        .text-green {
-            color: #2e7d32;
-            font-weight: bold;
-        }
-
-        .cell-center {
-            text-align: center;
-        }
-    </style>
-
-    <script>
-        function openWorkDayReport() {
-            const modal = document.getElementById('workDayReportModal');
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.add('visible'), 10);
-
-            // Set default dates (current month)
-            const now = new Date();
-            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-            document.getElementById('reportDateStart').valueAsDate = firstDay;
-            document.getElementById('reportDateEnd').valueAsDate = now;
-
-            loadWorkDayReport();
-        }
-
-        function closeWorkDayReport() {
-            const modal = document.getElementById('workDayReportModal');
-            modal.classList.remove('visible');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        function getWeekNumber(d) {
-            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-            var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-            var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-            return weekNo;
-        }
-
-        function getDayName(d) {
-            const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-            return days[d.getDay()];
-        }
-
-        async function loadWorkDayReport() {
-            const content = document.getElementById('workDayReportContent');
-            content.innerHTML = '<div class="loading">Загрузка данных...</div>';
-
-            const script = document.createElement('script');
-            const callbackName = 'workDayReportCallback_' + Date.now();
-
-            window[callbackName] = function (result) {
-                delete window[callbackName];
-                document.head.removeChild(script);
-                renderWorkDayTable(result);
-            };
-
-            // Assuming user has updated GAS to handle 'getWorkDayData' or we reuse getData and filter
-            // Ideally we use a new action. If not available, we might fail.
-            // But since I provided gas_updated.js, I assume user applied it.
-            // If they didn't, this might fail or return nothing.
-            // Fallback: use getData and try to parse? No, getData returns map7.
-            // We MUST assume 'getWorkDayData' exists or 'getData' includes it.
-            // Let's try to use 'action=getData' first as it returns 'debugSheets'? 
-            // No, sticking to the plan: requesting 'getWorkDayData'.
-            // If user didn't update script, this call will return "Unknown action".
-
-            const url = `${SCRIPT_URL}?action=getWorkDayData&callback=${callbackName}`;
-
-            script.src = url;
-            script.onerror = () => {
-                content.innerHTML = '<div class="error">Ошибка загрузки данных. Проверьте подключение или обновление скрипта.</div>';
-            };
-            document.head.appendChild(script);
-        }
-
-        function renderWorkDayTable(data) {
-            const content = document.getElementById('workDayReportContent');
-
-            if (!data || !data.success) {
-                content.innerHTML = `<div class="error">Ошибка сервера: ${data ? data.message : 'Нет данных'} (Возможно, вы не обновили GAS скрипт)</div>`;
-                return;
-            }
-
-            const rows = data.data || [];
-            if (rows.length === 0) {
-                content.innerHTML = '<div class="info">Нет записей за выбранный период.</div>';
-                return;
-            }
-
-            let html = `
-                <div class="table-responsive">
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th>Дата</th>
-                            <th>Нед.</th>
-                            <th>День</th>
-                            <th>Инспектор</th>
-                            <th>Вр.Откр</th>
-                            <th>Гео.Откр</th>
-                            <th>Вр.Закр</th>
-                            <th>Гео.Закр</th>
-                            <th>Кол-во</th>
-                            <th>Баллы</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            // Filter by date
-            const startStr = document.getElementById('reportDateStart').value;
-            const endStr = document.getElementById('reportDateEnd').value;
-            const startDate = startStr ? new Date(startStr) : null;
-            const endDate = endStr ? new Date(endStr) : null;
-            if (endDate) endDate.setHours(23, 59, 59, 999);
-
-            const getTimeEmoji = (timeVal, type) => {
-                if (!timeVal) return '➖';
-                
-                let h, m;
-                const str = String(timeVal).trim();
-                const date = new Date(str);
-                
-                // 1. If it's a valid ISO-like date (from GAS Date object), use Date methods (handles Timezone)
-                // We check for 'T' to distinguish from simple "16:04" which new Date might parse as "Today 16:04" or "Invalid"
-                // But GAS sends "1899-12-30T..."
-                if (!isNaN(date.getTime()) && str.includes('T')) {
-                    h = date.getHours();
-                    m = date.getMinutes();
-                } 
-                // 2. Fallback: Parse HH:MM from string (e.g. "16:04" or text)
-                else {
-                    const parts = str.match(/(\d{1,2}):(\d{2})/);
-                    if (parts) {
-                        h = parseInt(parts[1], 10);
-                        m = parseInt(parts[2], 10);
-                    } else {
-                        return '❓';
-                    }
-                }
-                
-                if (type === 'start') {
-                    // Green: < 9:00:00
-                    if (h < 9 || (h === 9 && m === 0)) return '✅';
-                    // Yellow: 9:00:01 - 9:15:00
-                    if (h === 9 && m <= 15) return '⚠️';
-                    // Red: > 9:15
-                    return '❌';
-                } else { // Close
-                    // Green: >= 18:00 (Strict 18:00 rule)
-                    if (h >= 18) return '✅';
-                    return '❌';
-                }
-            };
-
-            rows.forEach(row => {
-                // 18-Column Schema:
-                // 0:date, 1:inspector, 2:time_open, 3:open_coords, 
-                // 4:first_coords, 5:corr_start, 6:comment
-                // 7:time_close, 8:close_coords, 9:last_coords, 10:corr_end
-                // 12:quality(qty), 17:sum_point
-
-                // Parse Date
-                let dateObj = null;
-                const dateStr = String(row[0]);
-                if (dateStr.includes('T') || dateStr.includes('-')) {
-                    dateObj = new Date(dateStr);
-                } else {
-                    const dateParts = dateStr.split('.');
-                    if (dateParts.length === 3) {
-                        dateObj = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
-                    }
-                }
-                if (dateObj && isNaN(dateObj.getTime())) dateObj = null;
-
-                const dateDisplay = dateObj ?
-                    `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}.${dateObj.getFullYear()}` :
-                    row[0];
-
-                if (startDate && dateObj && dateObj < startDate) return;
-                if (endDate && dateObj && dateObj > endDate) return;
-
-                const weekNum = dateObj ? getWeekNumber(dateObj) : '-';
-                const dayName = dateObj ? getDayName(dateObj) : '-';
-                const inspector = row[1];
-                
-                // Time Emojis
-                const timeStartEmoji = getTimeEmoji(row[2], 'start');
-                const timeEndEmoji = getTimeEmoji(row[7], 'close');
-
-                // Geo Emojis
-                const corrStart = row[5] || '-';
-                const corrEnd = row[10] || '-';
-
-                const qty = row[12];
-                const score = row[17];
-
-                html += `
-                    <tr>
-                        <td style="white-space:nowrap;">${dateDisplay}</td>
-                        <td class="cell-center">${weekNum}</td>
-                        <td class="cell-center" style="font-size:0.8em">${dayName}</td>
-                        <td style="font-size:0.9em">${inspector}</td>
-                        <td class="cell-center" style="font-size:1.2em">${timeStartEmoji}</td>
-                        <td class="cell-center" style="font-size:1.2em">${corrStart}</td>
-                        <td class="cell-center" style="font-size:1.2em">${timeEndEmoji}</td>
-                        <td class="cell-center" style="font-size:1.2em">${corrEnd}</td>
-                        <td class="cell-center"><strong>${qty || '0'}</strong></td>
-                        <td class="cell-center"><strong>${typeof score === 'number' ? score.toFixed(1) : (score || '-')}</strong></td>
-                    </tr>
-                `;
-            });
-
-            html += '</tbody></table></div>';
-            content.innerHTML = html;
-        }
-
-
-        function archiveCompletedObjects() {
-            if (!confirm('Вы уверены, что хотите архивировать выполненные объекты? Они будут перенесены в лист АРХИВ и удалены с карты.')) return;
-            
-            showNotification('⏳ Начинаю архивацию...', 'info');
-            
-            const script = document.createElement('script');
-            const callbackName = 'archiveCallback_' + Date.now();
-            
-            window[callbackName] = function(result) {
-                delete window[callbackName];
-                document.head.removeChild(script);
-                if (result && result.success) {
-                    showNotification(`✅ Архивация завершена. Перенесено: ${result.count}`, 'success');
-                    setTimeout(loadData, 1000);
-                } else {
-                    showNotification(`❌ Ошибка: ${result ? result.message : 'Unknown'}`, 'error');
-                }
-            };
-            
-            const url = `${SCRIPT_URL}?action=archiveCompleted&callback=${callbackName}`;
-            script.src = url;
-            script.onerror = () => { showNotification('❌ Ошибка сети', 'error'); };
-            document.head.appendChild(script);
-        }
-
-    </script>
-    <script>
-        // 🔥 V8: ACTIVE REFRACTION LOGIC
-        // Ensures the glass distorts when the user touches the slider area
-        (function () {
-            let listenersAttached = false;
-
-            function initGlassInteractions() {
-                const menu = document.querySelector('.modern-menu');
-                if (!menu || listenersAttached) return;
-
-                const indicator = menu.querySelector('.menu-indicator');
-                if (!indicator) return;
-
-                console.log('💎 Glass Interaction V8 Initialized');
-
-                // Helper to activate
-                const activate = () => {
-                    indicator.classList.add('touch-active');
-                    // Optional: Boost animation speed?? No, CSS handles scale/blur
-                };
-
-                // Helper to deactivate
-                const deactivate = () => {
-                    indicator.classList.remove('touch-active');
-                };
-
-                // Attach to Menu Container (so fat fingers work)
-                menu.addEventListener('touchstart', activate, { passive: true });
-                menu.addEventListener('touchend', deactivate, { passive: true });
-                menu.addEventListener('touchcancel', deactivate, { passive: true });
-
-                // Desktop Mouse Support (for testing)
-                menu.addEventListener('mousedown', activate);
-                document.addEventListener('mouseup', deactivate);
-
-                listenersAttached = true;
-            }
-
-            // Check repeatedly in case menu is dynamic
-            setInterval(initGlassInteractions, 1000);
-
-            // Also try now
-            if (document.readyState === 'complete') initGlassInteractions();
-            else window.addEventListener('load', initGlassInteractions);
-        })();
-    </script>
-    <svg style="display: none; width: 0; height: 0;">
-        <filter id="displacementFilter">
-            <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" result="turbulence" />
-            <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="30" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-    </svg>
 </body>
 
 </html>
+
