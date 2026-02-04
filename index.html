@@ -33,16 +33,17 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const fbDb = firebase.database();
-        let lastSyncTs = 0;
+        let lastSyncTs = Date.now(); // Ignore old events
 
         // 📡 Listen for remote updates
         fbDb.ref('sync/lastUpdate').on('value', (snapshot) => {
             const val = snapshot.val();
             if (val && val > lastSyncTs) {
-                console.log('📡 Real-time update signal received from Firebase');
+                console.log('📡 Real-time update signal received');
                 lastSyncTs = val;
-                // Avoid refreshing if we are in the middle of login or something critical
-                if (window.currentUser) {
+                
+                if (currentUser) {
+                    if (window.showNotification) showNotification('🔄 Синхронизация данных...', 'info');
                     loadData(); 
                 }
             }
@@ -51,8 +52,15 @@
         // 📢 Signal an update to others
         function notifySync() {
             const ts = Date.now();
-            lastSyncTs = ts; // Don't trigger own listener
-            fbDb.ref('sync/lastUpdate').set(ts);
+            lastSyncTs = ts; 
+            fbDb.ref('sync/lastUpdate').set(ts)
+                .then(() => {
+                    console.log('✅ Signal sent to Firebase');
+                })
+                .catch((error) => {
+                    console.error('🔥 FIREBASE ERROR:', error);
+                    if (window.showNotification) showNotification('Ошибка Firebase: ' + error.message, 'error');
+                });
         }
     </script>
 
